@@ -13,4 +13,7 @@ add_executable(PR1 main.cpp
         Farmacia.cpp
         Farmacia.h
         Stock.cpp
-        Stock.h)
+        Stock.h
+        ThashMedicam.h
+        ThashMedicam.cpp
+)
