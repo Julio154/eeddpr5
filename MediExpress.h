@@ -35,8 +35,8 @@ class MediExpress
         void suministrarMed();
         Laboratorio* buscarLab(std::string nombreLab);
 
-        std::list<Laboratorio> buscarLabCiudad(std::string nombreCiudad);
-        std::list<Laboratorio> buscarLabSoloCiudad(std::string nombreCiudad);
+        std::list<Laboratorio*> buscarLabCiudad(std::string nombreCiudad);
+        std::list<Laboratorio*> buscarLabSoloCiudad(std::string nombreCiudad);
         std::vector<PaMedicamento*> buscarCompuesto(std::string comp);
         std::vector<PaMedicamento*> getMedicamSinLab();
 
@@ -49,7 +49,7 @@ class MediExpress
         PaMedicamento *buscarCompuesto(int id_num); //para enlazar un medicamento a una farmacia
         std::vector<Farmacia*> buscarFarmacias(std::string nombre);
         void suministrarFarmacia(Farmacia &f, int id_num, int n);
-        std::list<Laboratorio> buscarLabs(PaMedicamento med);
+        std::list<Laboratorio*> buscarLabs(PaMedicamento med);
 
         std::map<std::string,Farmacia> *get_pharmacy();
 

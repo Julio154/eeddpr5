@@ -64,12 +64,12 @@ void PaMedicamento::set_nombre(const std::string &nombre) {
     this->nombre = nombre;
 }
 
-void PaMedicamento::setLab(const Laboratorio lab) {
-    this->lab=lab;
+void PaMedicamento::setLab(Laboratorio &lab) {
+    this->lab = &lab;
 }
 
 std::string PaMedicamento::servidoPor() {
-    return lab.get_nombre_lab();
+    return lab->get_nombre_lab();
 }
 
 /**

@@ -16,7 +16,7 @@ private:
     int id_num;
     std::string id_alpha;
     std::string nombre;
-    Laboratorio lab;
+    Laboratorio *lab;
 
 public:
     /**
@@ -38,7 +38,7 @@ public:
     void set_id_alpha(const std::string &id_alpha);
     std::string get_nombre() const;
     void set_nombre(const std::string &nombre);
-    void setLab(const Laboratorio lab);
+    void setLab(Laboratorio &lab);
     std::string servidoPor();
 
     /** Sobrecarga de operadores para comparar objetos PaMedicamento */

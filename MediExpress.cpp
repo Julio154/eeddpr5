@@ -202,21 +202,21 @@ std::list<Laboratorio>::iterator it= labs.begin();
     return nullptr;
 }
 
-std::list<Laboratorio> MediExpress::buscarLabCiudad(std::string nombreCiudad) {
-std::list<Laboratorio> nuevaLista;
+std::list<Laboratorio*> MediExpress::buscarLabCiudad(std::string nombreCiudad) {
+    std::list<Laboratorio*> nuevaLista;
     for (std::list<Laboratorio> ::iterator it= labs.begin();it!=labs.end() ; it++) {
         if (it->get_localidad().find(nombreCiudad)!= std::string::npos) {
-            nuevaLista.push_back(*it);
+            nuevaLista.push_back(&(*it));
         }
     }
     return nuevaLista;
 
 }
-std::list<Laboratorio> MediExpress::buscarLabSoloCiudad(std::string nombreCiudad) {
-    std::list<Laboratorio> nuevaLista;
+std::list<Laboratorio*> MediExpress::buscarLabSoloCiudad(std::string nombreCiudad) {
+    std::list<Laboratorio*> nuevaLista;
     for (std::list<Laboratorio> ::iterator it= labs.begin();it!=labs.end() ; it++) {
         if (it->get_localidad().find(nombreCiudad) != std::string::npos) {
-            nuevaLista.push_back(*it);
+            nuevaLista.push_back(&(*it));
         }
     }
     return nuevaLista;
@@ -281,11 +281,11 @@ void MediExpress::suministrarFarmacia(Farmacia &f, int id_num, int n) {
 
 }
 
-std::list<Laboratorio> MediExpress::buscarLabs(PaMedicamento med) {
-    std::list<Laboratorio> nuevaLista;
+std::list<Laboratorio*> MediExpress::buscarLabs(PaMedicamento med) {
+    std::list<Laboratorio*> nuevaLista;
     for (std::list<Laboratorio> ::iterator it= labs.begin();it!=labs.end() ; it++) {
         if (it->get_nombre_lab().find(med.get_nombre()) != std::string::npos) {
-            nuevaLista.push_back(*it);
+            nuevaLista.push_back(&(*it));
         }
     }
     return nuevaLista;
