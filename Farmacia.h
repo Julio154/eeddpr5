@@ -10,7 +10,7 @@
 class MediExpress;
 #include <string>
 //#include "MediExpress.h"
-#include <set>
+#include "map"
 class Farmacia {
 private:
     std::string cif;
@@ -20,7 +20,7 @@ private:
     std::string direccion;
     std::string codPostal;
     MediExpress *linkMedi;
-    std::set<Stock*> order;
+    std::map<int,Stock*> order;
 
     void pedidoMedicam(int id_num, int n);
 

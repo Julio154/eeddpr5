@@ -223,22 +223,28 @@ std::list<Laboratorio*> MediExpress::buscarLabSoloCiudad(std::string nombreCiuda
 
 }
 
-std::vector<PaMedicamento*> MediExpress::buscarCompuesto(std::string comp) {
-    std::vector<PaMedicamento*> vmedicamento;
-    for (unsigned int i = 0; i < medication.size(); ++i) {
-        if (medication[i].get_nombre().find(comp) != std::string::npos) {
-            vmedicamento.push_back(&medication[i]);
-            std::cout<<"Medicamento encontrado: "<<medication[i].get_nombre()<<std::endl;
-        }
+std::multimap<std::string,PaMedicamento*> MediExpress::buscarCompuesto(std::string comp) {
+
+    std::multimap<std::string,PaMedicamento*> vmedicamento;
+
+    // Buscar por nombre directamente y no por subcadena
+    for (std::multimap<std::string,PaMedicamento*>::iterator it = nombMedication.begin();
+        it != nombMedication.end();
+        ++it){
+        if (it->first == comp)
+            vmedicamento.insert(*it);
     }
+
     return vmedicamento;
 }
 
 std::vector<PaMedicamento *> MediExpress::getMedicamSinLab() {
     std::vector<PaMedicamento*> vmedicamento;
-    for (unsigned int i = 0; i < medication.size(); ++i) {
-        if (medication[i].servidoPor() == "") {
-            vmedicamento.push_back(&medication[i]);
+    for (std::multimap<std::string,PaMedicamento*>::iterator it = nombMedication.begin();
+        it != nombMedication.end();
+        ++it) {
+        if (it->second->servidoPor() == "") {
+            vmedicamento.push_back(it->second);
         }
     }
     return vmedicamento;

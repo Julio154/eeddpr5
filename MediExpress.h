@@ -10,14 +10,19 @@
 #include "list"
 #include "PaMedicamento.h"
 #include "vector"
+#include "ThashMedicam.h"
 
 
 class MediExpress
 {
     private:
         std::list<Laboratorio> labs;
-        std::vector<PaMedicamento> medication;
-        std::map<std::string,Farmacia> pharmacy;
+        std::multimap<std::string,Farmacia> pharmacy;
+        std::multimap<std::string,PaMedicamento*> nombMedication;
+        ThashMedicam idMedication; //Clave id del PaMedicamento
+        // Una estructura trabaja con los pamedicamentos por clave string que sera
+        // su nombre y el otro por su id (el cual se usará para alojarlo en la estructura)
+
     public:
         MediExpress();
         ~MediExpress();
@@ -37,7 +42,8 @@ class MediExpress
 
         std::list<Laboratorio*> buscarLabCiudad(std::string nombreCiudad);
         std::list<Laboratorio*> buscarLabSoloCiudad(std::string nombreCiudad);
-        std::vector<PaMedicamento*> buscarCompuesto(std::string comp);
+        std::multimap<std::string,PaMedicamento*> buscarCompuesto(std::string comp); // Busca en el multimap
+        PaMedicamento *buscarCompuesto(int id_num); // Busca en la tabla hash
         std::vector<PaMedicamento*> getMedicamSinLab();
 
         std::list<Laboratorio>& get_labs() ;
@@ -46,7 +52,7 @@ class MediExpress
 
         std::vector<PaMedicamento*> get_medication();
 
-        PaMedicamento *buscarCompuesto(int id_num); //para enlazar un medicamento a una farmacia
+         //para enlazar un medicamento a una farmacia
         std::vector<Farmacia*> buscarFarmacias(std::string nombre);
         void suministrarFarmacia(Farmacia &f, int id_num, int n);
         std::list<Laboratorio*> buscarLabs(PaMedicamento med);

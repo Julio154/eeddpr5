@@ -9,6 +9,7 @@
 #include <deque>
 #include <algorithm>
 #include <cmath>
+using namespace std;
 
 struct Estado{
     char libre=1, ocupado=0, disponible=0;
