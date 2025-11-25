@@ -225,14 +225,27 @@ std::list<Laboratorio*> MediExpress::buscarLabSoloCiudad(std::string nombreCiuda
 
 std::multimap<std::string,PaMedicamento*> MediExpress::buscarCompuesto(std::string comp) {
 
+    std::istringstream iss(comp);
+    std::vector<std::string> compuestos;
+    std::string seg;
+
+    while (std::getline(iss,seg, ' ')) {
+        if ( !seg.empty()) {
+            compuestos.push_back(seg);
+        }
+    }
+
     std::multimap<std::string,PaMedicamento*> vmedicamento;
 
-    // Buscar por nombre directamente y no por subcadena
-    for (std::multimap<std::string,PaMedicamento*>::iterator it = nombMedication.begin();
-        it != nombMedication.end();
-        ++it){
-        if (it->first == comp)
+    for (int i = 0; i < compuestos.size(); i++) {
+        std::pair<std::multimap<std::string,PaMedicamento*>::iterator,
+              std::multimap<std::string,PaMedicamento*>::iterator> range;
+        range = nombMedication.equal_range(comp);
+
+        // Buscar por nombre directamente y no por subcadena
+        for ( multimap<std::string,PaMedicamento*>::iterator it = range.first; it != range.second; ++it ){
             vmedicamento.insert(*it);
+        }
     }
 
     return vmedicamento;
