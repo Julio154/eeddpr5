@@ -32,6 +32,79 @@ unsigned long ThashMedicam::primomayFun(int n) {
     return nuevoprimo;
 }
 
+void ThashMedicam::redimensionar(bool expandir) {
+
+    unsigned long tam_antiguo = tablah.size();
+    unsigned long tam_nuevo;
+
+    // CALCULAR NUEVO TAMAÑO
+    if (expandir) {
+        tam_nuevo = primomayFun(tam_antiguo * 2);
+    } else {
+        if (tam_antiguo < 20) return;
+        tam_nuevo = primomenFun(tam_antiguo / 2);
+    }
+
+    // CREAR TABLA NUEVA VACÍA
+    std::deque<Entrada> nueva_tabla(tam_nuevo);
+
+    this->tamf = tam_nuevo;
+    this->tablah.clear();
+    this->tablah.resize(tam_nuevo);
+
+    // Inicializar estados de la nueva tabla
+    for (unsigned long i = 0; i < tam_nuevo; i++) {
+        nueva_tabla[i].estado.libre = 1;
+        nueva_tabla[i].estado.ocupado = 0;
+        nueva_tabla[i].estado.disponible = 0;
+    }
+
+    // REHASHING
+    for (unsigned long i = 0; i < tam_antiguo; i++) {
+
+        // Solo movemos las casillas que están OCUPADAS (ignoramos libres y disponibles/borradas)
+        if (tablah[i].estado.ocupado == 1) {
+
+            unsigned long clave = tablah[i].clave;
+            unsigned int intento = 0;
+            bool insertado = false;
+
+            // Bucle de resolución de colisiones en la NUEVA tabla
+            while (!insertado) {
+                unsigned int pos_nueva;
+
+                // Seleccionamos la función hash según la configuración de la clase (th)
+                if (this->th == 1) {
+                    pos_nueva = hash1(clave, intento);
+                } else if (this->th == 2) {
+                    pos_nueva = hash2(clave, intento);
+                } else {
+                    pos_nueva = hash3(clave, intento);
+                }
+
+                if (nueva_tabla[pos_nueva].estado.libre == 1) {
+                    // Copiar todos los datos de la casilla
+                    nueva_tabla[pos_nueva] = tablah[i];
+
+                    // Asegurar que los estados son correctos en la nueva
+                    nueva_tabla[pos_nueva].estado.libre = 0;
+                    nueva_tabla[pos_nueva].estado.ocupado = 1;
+                    nueva_tabla[pos_nueva].estado.disponible = 0;
+
+                    insertado = true;
+                } else {
+                    intento++; // Colisión en la nueva tabla, probamos siguiente salto
+                }
+            }
+        }
+    }
+
+    // 4. ACTUALIZAR LA CLASE
+    tablah = nueva_tabla; // El vector viejo se destruye aquí
+    // taml (cantidad de elementos) se queda igual, no cambia.
+}
+
+
 //Cuadratica modificada.
 unsigned int ThashMedicam::hash1(unsigned long clave, int n) const{
 
@@ -99,45 +172,54 @@ ThashMedicam &ThashMedicam::operator=(const ThashMedicam &orig) {
 }
 
 bool ThashMedicam::inserta(unsigned long clave, const PaMedicamento &dato) {
-
-    int modificador=0;
-    unsigned int hasheo;
-    char sigue = 0;
-
-    while(sigue != 1){
-        if(this->th==1)
-            hasheo= hash1(clave,modificador);
-        if(this->th==2)
-            hasheo= hash2(clave,modificador);
-        if(this->th==3)
-            hasheo= hash3(clave,modificador);
-
-        if(tablah.at(hasheo).estado.libre == 1 || tablah.at(hasheo).estado.disponible == 1){
-            tablah.at(hasheo).dato=dato;
-                tablah.at(hasheo).estado.disponible=0; //ESTADO
-                tablah.at(hasheo).estado.libre=0;
-                tablah.at(hasheo).estado.ocupado=1;
-            tablah.at(hasheo).clave=clave;
-            taml++;
-
-            sigue=1;
-        }
-        else{
-            if(tablah.at(hasheo).dato == dato)
-                return false;
-
-            modificador++;
-        }
-
+    // Redimensión preventiva: Si superamos el 60%, crecemos antes de insertar.
+    if ((double)taml / tamf > 0.6) {
+        redimensionar(true);
     }
 
-    sumacol+=modificador;
-    if(modificador > num_max_col)
-        this->num_max_col=modificador;
-    if(modificador > 10)
-        this->max10++;
+    int modificador = 0;
+    unsigned int hasheo;
 
-    return true;
+    while (true) { // Bucle infinito controlado por los return
+
+        // Selección de función Hash (Más compacto con else if)
+        if (th == 1)
+            hasheo = hash1(clave, modificador);
+        else if (th == 2)
+            hasheo = hash2(clave, modificador);
+        else
+            hasheo = hash3(clave, modificador);
+
+        Entrada &celda = tablah.at(hasheo);
+
+        // El dato ya existe (Duplicado)
+        if (celda.dato == dato) {
+            return false;
+        }
+
+        // Encontramos un hueco (Libre o Disponible/Borrado)
+        if (celda.estado.libre == 1 || celda.estado.disponible == 1) {
+            celda.dato = dato;
+            celda.clave = clave;
+
+            // Actualizar estados
+            celda.estado.libre = 0;
+            celda.estado.ocupado = 1;
+            celda.estado.disponible = 0;
+
+            taml++; // Aumentar contador de elementos
+
+            // Actualizar estadísticas de colisiones
+            sumacol += modificador;
+            if (modificador > num_max_col) num_max_col = modificador;
+            if (modificador > 10) max10++;
+
+            return true; // Éxito y salimos
+        }
+
+        // Ocupado por otro dato -> Colisión, aumentamos modificador y repetimos
+        modificador++;
+    }
 }
 
 PaMedicamento *ThashMedicam::buscar(unsigned long clave) {
@@ -160,43 +242,53 @@ PaMedicamento *ThashMedicam::buscar(unsigned long clave) {
         else{
             if(tablah.at(hasheo).estado.libre == 1)
                 return nullptr;
-            else
-                modificador++;
+
+            modificador++;
         }
     }
-
-    return nullptr;
 }
 
 bool ThashMedicam::borra(unsigned long clave) {
-    int modificador=0;
+    int modificador = 0;
     unsigned int hasheo;
-    char sigue = 0;
 
-    while(sigue != 1) {
-        if (this->th == 1)
+    while (true) {
+        // 1. Calcular Hash según la configuración actual
+        if (th == 1)
             hasheo = hash1(clave, modificador);
-        if (this->th == 2)
+        else if (th == 2)
             hasheo = hash2(clave, modificador);
-        if (this->th == 3)
+        else
             hasheo = hash3(clave, modificador);
 
-        if(tablah.at(hasheo).clave == clave && tablah.at(hasheo).estado.ocupado == 1){
-            tablah.at(hasheo).estado.ocupado=0;
-            tablah.at(hasheo).estado.disponible=1;
+        // Referencia rápida a la celda actual
+        Entrada &celda = tablah.at(hasheo);
 
-            taml--;
-            sigue=1;
+        if (celda.estado.libre == 1) {
+            return false;
         }
-        else{
-            if(tablah.at(hasheo).estado.libre == 1){
-                return false;
+
+        // ENCONTRADO (Coincide clave y está ocupado)
+        if (celda.estado.ocupado == 1 && celda.clave == clave) {
+
+            // Borrado lógico (Lazy Deletion)
+            celda.estado.ocupado = 0;
+            celda.estado.disponible = 1; // Marcamos como "hueco sucio"
+            // No tocamos 'libre', sigue siendo 0
+
+            taml--; // Decrementamos número de elementos
+
+            // REDIMENSIÓN (SHRINK)
+            if (tamf > 50 && (float)taml / tamf < 0.2) {
+                redimensionar(false);
             }
-            else{
-                modificador++;
-            }
+
+            return true;
         }
+
+        modificador++;
+
+        if (modificador > tamf) return false;
     }
-    return true;
 }
 

@@ -49,6 +49,8 @@ private:
     unsigned long primomenFun(int n);
     unsigned long primomayFun(int n);
 
+    void redimensionar(bool expandir);
+
     unsigned int hash1(unsigned long clave, int n)const;//Función de dispersión básica
     unsigned int hash2(unsigned long clave, int n)const;
     unsigned int hash3(unsigned long clave, int n)const;
