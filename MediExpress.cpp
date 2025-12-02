@@ -355,4 +355,32 @@ bool MediExpress::eliminarMedicamento(int id_num) {
     return encontradoEnCentral;*/
 }
 
+unsigned int MediExpress::maxColisiones() {
+    return idMedication.getSumaColisiones();
+}
+
+unsigned int MediExpress::numMax10() {
+    return idMedication.getMax10();
+
+}
+unsigned int MediExpress::promedioColisiones() {
+
+    return idMedication.getPromedioColisiones();
+}
+float MediExpress::factorCarga() {
+
+    return idMedication.getFactorCarga();
+}
+
+void MediExpress::mostrarEstadoTabla() {
+    std::cout << std::endl;
+    std::cout <<"ESTADO DE LA TABLA:"<< std::endl;
+    std::cout <<"max colisiones "<<maxColisiones()<< std::endl;
+    std::cout <<"numMax10: "<<numMax10()<< std::endl;
+    //std::cout <<"promedio colisiones "<<promedioColisiones()<< std::endl;
+    std::cout <<"factorCarga "<<factorCarga()<< std::endl;
+    std::cout <<"Tamano Logico "<<idMedication.getTaml()<< std::endl;
+    std::cout <<"Tamano fisico "<<idMedication.getTamf()<< std::endl;
+}
+
 

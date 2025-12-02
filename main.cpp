@@ -55,8 +55,8 @@ int main(int argc, const char * argv[]) {
         int opcion;
         MediExpress medi_express("../farmacias.csv","../pa_medicamentos.csv","../lab2.csv");
 
-        ThashMedicam medicam(512153, 0.68, 1);
-        medi_express.set_id_medication(medicam);
+        ThashMedicam medicam(3310*3, 0.68, 1);
+        ;
         std::string id_number = "";
         std::string id_alpha="";
         std::ifstream is;
@@ -100,6 +100,9 @@ c++;
 
         std::cout<<"Prueba buscando dato aleatorio en medi express"<<std::endl;
         std::cout<<"Dato "<<medicam.buscar(medi_express.get_id_medication().djb22(std::to_string(1903)))->get_nombre()<<std::endl;
+        medi_express.set_id_medication(medicam);
+        medi_express.mostrarEstadoTabla();
+        std::cout<<"TAML: "<<medicam.getTaml()<<"GETmax10:"<<medicam.getMax10()<<std::endl;
 
        /* std::vector<PaMedicamento*> meds_sin_lab = medi_express.getMedicamSinLab();
         std::list<Laboratorio> labs_madrid2 = medi_express.buscarLabSoloCiudad("Madrid");
