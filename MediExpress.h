@@ -20,10 +20,14 @@ class MediExpress
         std::multimap<std::string,Farmacia> pharmacy;
         std::multimap<std::string,PaMedicamento*> nombMedication;
         ThashMedicam idMedication; //Clave id del PaMedicamento
+    public:
+        ThashMedicam get_id_medication() const;
+
+        void set_id_medication(const ThashMedicam &id_medication);
+
         // Una estructura trabaja con los pamedicamentos por clave string que sera
         // su nombre y el otro por su id (el cual se usará para alojarlo en la estructura)
 
-    public:
         MediExpress();
         ~MediExpress();
 

@@ -31,7 +31,7 @@ Farmacia::Farmacia(const Farmacia &other):
     linkMedi(other.linkMedi),
     order(other.order)
 {}
-
+/*
 std::set<Stock*> Farmacia::buscaMedicamNombre(std::string nombreMed) {
     std::set<Stock*> aux;
     for (std::set<Stock*>::iterator it = order.begin(); it != order.end(); ++it) {
@@ -73,12 +73,12 @@ void Farmacia::dispensaMedicam(PaMedicamento *pa) {
 
 int Farmacia::comprarMedicam(int id_num, int n, PaMedicamento &result) {
 
-    int num_med_disp = buscaMedicamID(id_num);
+/*    int num_med_disp = buscaMedicamID(id_num);
     if (num_med_disp > n) {
         Stock *aux;
-        for (std::set<Stock*>::iterator it = order.begin(); it != order.end(); ++it) {
-            if ((*it)->get_id_pa_med() == id_num) {
-                aux = (*it);
+        for (auto it = order.begin(); it != order.end(); ++it) {
+            if ((*it).second->get_id_pa_med() == id_num) {
+                aux = (*it).second;
                 break;
             }
         }
@@ -87,7 +87,7 @@ int Farmacia::comprarMedicam(int id_num, int n, PaMedicamento &result) {
         pedidoMedicam(id_num, n);
     }
 
-    return num_med_disp;
+    return num_med_disp;*/
 }
 
 std::string Farmacia::get_cif() const {
@@ -148,23 +148,22 @@ void Farmacia::set_link_medi(MediExpress *link_medi) {
 
 void Farmacia::nuevoStock(PaMedicamento *pa, int n) {
     Stock *aux = new Stock(pa, n);
-
-    std::set<Stock*>::iterator it;
-    for (it=order.begin(); it!=order.end(); ++it) {
-        if ((*it)->get_id_pa_med() == pa->get_id_num()) {
-            (*it)->incrementa(n);
+    map<int, Stock *>::iterator it;
+    for ( it=order.begin(); it!=order.end(); ++it) {
+        if ((*it).second->get_id_pa_med() == pa->get_id_num()) {
+            (*it).second->incrementa(n);
             break;
         }
     }
     if (it == order.end()) {
-        order.insert(aux);
+        order.insert({aux->get_id_pa_med(),aux});
     }
 }
 
 bool Farmacia::eliminarStock(int id_num) {
-    std::set<Stock*>::iterator it;
+    map<int, Stock *>::iterator it;
     for (it=order.begin(); it!=order.end(); ++it) {
-        if ((*it)->get_id_pa_med() == id_num) {
+        if ((*it).second->get_id_pa_med() == id_num) {
             order.erase(it);
             return true;
         }

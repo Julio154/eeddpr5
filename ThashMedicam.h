@@ -20,7 +20,7 @@ struct Estado{
 class ThashMedicam {
 private:
     class Entrada{
-    public:
+        public:
         unsigned long clave;
         Estado estado;
         PaMedicamento dato;
@@ -28,7 +28,7 @@ private:
         ~Entrada(){};
     };
 
-    int th=0;
+    int th=2;
     unsigned long tamf=0;
     unsigned long taml=0;
     unsigned long num_max_col=0;
@@ -64,6 +64,8 @@ public:
     ThashMedicam(const ThashMedicam &orig);
     ~ThashMedicam() = default;
     ThashMedicam &operator=(const ThashMedicam &orig);
+    unsigned long djb22(const std::string &cad){return djb2(cad);};
+
 
     bool inserta(unsigned long clave, const PaMedicamento &dato);
     PaMedicamento *buscar(unsigned long clave);

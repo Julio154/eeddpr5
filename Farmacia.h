@@ -9,6 +9,7 @@
 #include "Stock.h"
 class MediExpress;
 #include <string>
+#include "set"
 //#include "MediExpress.h"
 #include "map"
 class Farmacia {
@@ -37,7 +38,7 @@ public:
 
     std::set<Stock*> buscaMedicamNombre(std::string nombreMed);
     //void dispensaMedicam(PaMedicamento *pa);
-    std::set<Stock*> medicamentosDispensados(){return order;}
+    //std::set<Stock*> medicamentosDispensados(){return order;}
     int comprarMedicam(int id_num, int n, PaMedicamento &result);
     int buscaMedicamID(int id_num);
 
@@ -55,7 +56,7 @@ public:
     void set_cod_postal(const std::string &cod_postal);
     MediExpress * get_link_medi() const;
     void set_link_medi(MediExpress *link_medi);
-    void set_order(const std::set<Stock*> &order){ this->order = order; };
+ //   void set_order(const std::set<Stock*> &order){ this->order = order; };
     void nuevoStock(PaMedicamento *pa, int n);
     bool eliminarStock(int id_num);
 

@@ -8,12 +8,20 @@
 #include <iostream>
 #include <sstream>
 
+ThashMedicam MediExpress::get_id_medication() const {
+    return idMedication;
+}
+
+void MediExpress::set_id_medication(const ThashMedicam &id_medication) {
+    idMedication = id_medication;
+}
+
 MediExpress::MediExpress() {
 }
 
 MediExpress::~MediExpress() {
 }
-MediExpress::MediExpress(const std::list<Laboratorio> &labs, const std::vector<PaMedicamento> &medication):
+/*MediExpress::MediExpress(const std::list<Laboratorio> &labs, const std::vector<PaMedicamento> &medication):
     labs(labs),
     medication(medication)
 {}
@@ -21,7 +29,7 @@ MediExpress::MediExpress(const std::list<Laboratorio> &labs, const std::vector<P
 MediExpress::MediExpress(const std::list<Laboratorio> &labs, const std::vector<PaMedicamento> &medication,
     const std::map<std::string,Farmacia> &pharmacy): labs(labs), medication(medication), pharmacy(pharmacy){
 }
-
+*/
 
 MediExpress::MediExpress(std::string fichero1,std::string fichero2,
   std::string fichero3){
@@ -69,42 +77,39 @@ MediExpress::MediExpress(std::string fichero1,std::string fichero2,
     }
             std::string id_number = "";
             std::string id_alpha="";
-
          //   is.open("../pa_medicamentos.csv"); //carpeta de proyecto
-                 is.open(fichero2);
+           /*     is.open(fichero2);
                  if ( is.good() ) {
-                clock_t t_ini = clock();
+                     clock_t t_ini = clock();
 
-                while ( getline(is, fila ) ) {
+                     while ( getline(is, fila ) ) {
 
-                    //¿Se ha leído una nueva fila?
-                    if (fila!="") {
+                         //¿Se ha leído una nueva fila?
+                         if (fila!="") {
 
-                        columnas.str(fila);
+                             columnas.str(fila);
 
-                        //formato de fila: id_number;id_alpha;nombre;
+                             //formato de fila: id_number;id_alpha;nombre;
 
-                        getline(columnas, id_number, ';'); //leemos caracteres hasta encontrar y omitir ';'
-                        getline(columnas, id_alpha,';');
-                        getline(columnas, nombre,';');
+                             getline(columnas, id_number, ';'); //leemos caracteres hasta encontrar y omitir ';'
+                             getline(columnas, id_alpha,';');
+                             getline(columnas, nombre,';');
 
-                        fila="";
-                        columnas.clear();
+                             fila="";
+                             columnas.clear();
 
-                        int idNumber=std::stoi(id_number);
-                        PaMedicamento medicamento(idNumber,id_alpha,nombre);
-                        medication.push_back(medicamento);
-                    }
-                }
+                             int idNumber=std::stoi(id_number);
+                             PaMedicamento medicamento(idNumber,id_alpha,nombre);
+                             //medication.push_back(medicamento);
+                             idMedication.inserta(idMedication.djb22(std::to_string(medicamento.get_id_num())),medicamento);
+                         }
+                     }
 
-                is.close();
-
+                     is.close();
+                 }*/
                 std::cout<<"Lectura de Laboratorios:"<<std::endl;
                 std::string id;
                 std::string nombre_lab;
-                std::string direccion;
-                std::string codPostal;
-                std::string localidad;
 
                 is.open(fichero3);
                 //is.open("../lab2.csv"); //carpeta de proyecto
@@ -135,23 +140,24 @@ MediExpress::MediExpress(std::string fichero1,std::string fichero2,
                     }
                     is.close();
                 }
-            }
 
     suministrarMed();
 
 }
+/*
 MediExpress::MediExpress(const std::map<std::string,Farmacia> &pharmacy)
             : pharmacy(pharmacy) {
-}
+}*/
 
 MediExpress::MediExpress(const MediExpress &orig):
     labs(orig.labs),
-    medication(orig.medication),
+    idMedication(orig.idMedication),
     pharmacy(orig.pharmacy)
 {}
 
 
 void MediExpress::suministrarMed() {
+    /*
     unsigned int totalMed = medication.size();
     unsigned int medIndex = 0;
 
@@ -189,7 +195,7 @@ void MediExpress::suministrarMed() {
     }
 
     std::cout << "Stock inicial distribuido. Último índice de medicamento asignado: " << medIndex << std::endl;
-
+*/
 }
 
 Laboratorio * MediExpress::buscarLab(std::string nombreLab) {
@@ -268,19 +274,21 @@ std::list<Laboratorio>& MediExpress::get_labs()  {
 }
 
 std::vector<PaMedicamento *> MediExpress::get_medication() {
+    /*
     std::vector<PaMedicamento*> meds;
     for (int i = 0; i < medication.size(); i++)
         meds[meds.size()] = &medication[i];
-    return meds;
+    return meds;*/
 }
 
 PaMedicamento *MediExpress::buscarCompuesto(int id_num) {
+    /*
     for (unsigned i = 0; i < medication.size(); ++i) {
         if (medication[i].get_id_num() == id_num) {
             return &medication[i];
         }
     }
-    return nullptr;
+    return nullptr;*/
 }
 
 std::vector<Farmacia*> MediExpress::buscarFarmacias(std::string nombre) {
@@ -311,12 +319,12 @@ std::list<Laboratorio*> MediExpress::buscarLabs(PaMedicamento med) {
 }
 
 std::map<std::string,Farmacia> *MediExpress::get_pharmacy() {
-    return &pharmacy;
+    //return &pharmacy;
 }
 
 bool MediExpress::eliminarMedicamento(int id_num) {
     bool encontradoEnCentral = false;
-
+/*
     for (auto it = medication.begin(); it != medication.end(); ) {
         if (it->get_id_num() == id_num) {
             it = medication.erase(it);
@@ -344,7 +352,7 @@ bool MediExpress::eliminarMedicamento(int id_num) {
                   << " no se encontro en el catalogo central." << std::endl;
     }
 
-    return encontradoEnCentral;
+    return encontradoEnCentral;*/
 }
 
 

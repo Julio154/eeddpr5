@@ -5,6 +5,7 @@
 #include "Laboratorio.h"
 #include "MediExpress.h"
 #include "PaMedicamento.h"
+#include "ThashMedicam.h"
 #include "Farmacia.h"
 
 /**
@@ -54,7 +55,53 @@ int main(int argc, const char * argv[]) {
         int opcion;
         MediExpress medi_express("../farmacias.csv","../pa_medicamentos.csv","../lab2.csv");
 
-        std::vector<PaMedicamento*> meds_sin_lab = medi_express.getMedicamSinLab();
+        ThashMedicam medicam(512153, 0.68, 1);
+        medi_express.set_id_medication(medicam);
+        std::string id_number = "";
+        std::string id_alpha="";
+        std::ifstream is;
+        std::stringstream  columnas;
+        std::string fila;
+        std::string nombre;
+
+          is.open("../pa_medicamentos.csv"); //carpeta de proyecto
+int c=0;
+        if ( is.good() ) {
+            clock_t t_ini = clock();
+
+            while ( getline(is, fila ) ) {
+
+                //¿Se ha leído una nueva fila?
+                if (fila!="") {
+
+                    columnas.str(fila);
+
+                    //formato de fila: id_number;id_alpha;nombre;
+
+                    getline(columnas, id_number, ';'); //leemos caracteres hasta encontrar y omitir ';'
+                    getline(columnas, id_alpha,';');
+                    getline(columnas, nombre,';');
+
+                    fila="";
+                    columnas.clear();
+
+                    int idNumber=std::stoi(id_number);
+                    PaMedicamento medicamento(idNumber,id_alpha,nombre);
+                    //medication.push_back(medicamento);
+                    medicam.inserta(medicam.djb22(std::to_string(medicamento.get_id_num())),medicamento);
+c++;
+                    std::cout<<"Insertado dato "<<c<<std::endl;
+                    std::cout<<"Dato "<<medicam.buscar(medicam.djb22(std::to_string(medicamento.get_id_num())))->get_nombre()<<std::endl;
+
+                }
+            }
+        }
+        std::cout<<"Insertado exitosamente"<<std::endl;
+
+        std::cout<<"Prueba buscando dato aleatorio en medi express"<<std::endl;
+        std::cout<<"Dato "<<medicam.buscar(medi_express.get_id_medication().djb22(std::to_string(1903)))->get_nombre()<<std::endl;
+
+       /* std::vector<PaMedicamento*> meds_sin_lab = medi_express.getMedicamSinLab();
         std::list<Laboratorio> labs_madrid2 = medi_express.buscarLabSoloCiudad("Madrid");
 
         std::cout << "Medicamentos sin laboratorio antes de: " << meds_sin_lab.size() << std::endl;
@@ -223,7 +270,7 @@ int main(int argc, const char * argv[]) {
                     }
 
                 }
-        }while(opcion>0 && opcion<5);
+        }while(opcion>0 && opcion<5);*/
     } catch (std::exception) {
             std::cerr<<"ERROR";
     }

@@ -4,6 +4,9 @@
 
 #include "ThashMedicam.h"
 
+#include <iostream>
+#include <ostream>
+
 bool ThashMedicam::esprimo(int n) {
 
     for (int div = 2; div < (n/2); ++div) {
@@ -157,7 +160,7 @@ ThashMedicam::ThashMedicam(const ThashMedicam &orig) :
 ThashMedicam &ThashMedicam::operator=(const ThashMedicam &orig) {
 
     if(this != &orig){
-        if (this) { delete[] this; }
+      //  if (this) { delete[] this; }
 
         th = orig.th;
         tamf = orig.tamf;
@@ -219,6 +222,7 @@ bool ThashMedicam::inserta(unsigned long clave, const PaMedicamento &dato) {
 
         // Ocupado por otro dato -> Colisión, aumentamos modificador y repetimos
         modificador++;
+        std::cout <<"Colision: "<< modificador << std::endl;
     }
 }
 
