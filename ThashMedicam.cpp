@@ -122,9 +122,9 @@ unsigned int ThashMedicam::hash1(unsigned long clave, int n) const{
 //Inventada 1
 unsigned int ThashMedicam::hash2(unsigned long clave, int n) const{
 
-    unsigned int hash = (int)pow(clave,2);
+    unsigned int hash;
 
-    hash = (hash * (n/2))%tamf;
+    hash = ((clave) + n*(clave*5)) % tamf;
 
     return hash;
 }
@@ -222,7 +222,6 @@ bool ThashMedicam::inserta(unsigned long clave, const PaMedicamento &dato) {
 
         // Ocupado por otro dato -> Colisión, aumentamos modificador y repetimos
         modificador++;
-        std::cout <<"Colision: "<< modificador << std::endl;
     }
 }
 

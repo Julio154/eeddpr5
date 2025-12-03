@@ -1,3 +1,4 @@
+#include <chrono>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -44,7 +45,46 @@ void mostrarLaboratorios(std::list<Laboratorio> *lista){
     }
     std::cout<<std::endl;
 }
+void cargarMedicamentos(ThashMedicam &medicam) {
+    std::string id_number = "";
+    std::string id_alpha="";
+    std::ifstream is;
+    std::stringstream  columnas;
+    std::string fila;
+    std::string nombre;
 
+    is.open("../pa_medicamentos.csv"); //carpeta de proyecto
+    //int c=0;
+    if ( is.good() ) {
+        clock_t t_ini = clock();
+
+        while ( getline(is, fila ) ) {
+
+            //¿Se ha leído una nueva fila?
+            if (fila!="") {
+
+                columnas.str(fila);
+
+                //formato de fila: id_number;id_alpha;nombre;
+
+                getline(columnas, id_number, ';'); //leemos caracteres hasta encontrar y omitir ';'
+                getline(columnas, id_alpha,';');
+                getline(columnas, nombre,';');
+
+                fila="";
+                columnas.clear();
+                int idNumber=std::stoi(id_number);
+                PaMedicamento medicamento(idNumber,id_alpha,nombre);
+                //medication.push_back(medicamento);
+                medicam.inserta(medicam.djb22(std::to_string(medicamento.get_id_num())),medicamento);
+    //            c++;
+  //              std::cout<<"Insertado dato "<<c<<std::endl;
+//                std::cout<<"Dato "<<medicam.buscar(medicam.djb22(std::to_string(medicamento.get_id_num())))->get_nombre()<<std::endl;
+
+            }
+        }
+    }
+}
 
 /**
  * @author Silvia Cruz Roman scr00043@red.ujaen.es
@@ -55,54 +95,41 @@ int main(int argc, const char * argv[]) {
         int opcion;
         MediExpress medi_express("../farmacias.csv","../pa_medicamentos.csv","../lab2.csv");
 
-        ThashMedicam medicam(3310*3, 0.68, 1);
-        ;
-        std::string id_number = "";
-        std::string id_alpha="";
-        std::ifstream is;
-        std::stringstream  columnas;
-        std::string fila;
-        std::string nombre;
+        ThashMedicam medicam068_1(3310, 0.68, 1);
 
-          is.open("../pa_medicamentos.csv"); //carpeta de proyecto
-int c=0;
-        if ( is.good() ) {
-            clock_t t_ini = clock();
 
-            while ( getline(is, fila ) ) {
+        ThashMedicam medicam068_2(3310, 0.68, 2);
+        cargarMedicamentos(medicam068_2);
+        ThashMedicam medicam068_3(3310, 0.68, 3);
+        cargarMedicamentos(medicam068_3);
 
-                //¿Se ha leído una nueva fila?
-                if (fila!="") {
 
-                    columnas.str(fila);
+        ThashMedicam medicam065_1(3310, 0.68, 1);
+        cargarMedicamentos(medicam065_1);
+        ThashMedicam medicam065_2(3310, 0.68, 2);
+        cargarMedicamentos(medicam065_2);
+        ThashMedicam medicam065_3(3310, 0.68, 3);
+        cargarMedicamentos(medicam065_3);
 
-                    //formato de fila: id_number;id_alpha;nombre;
 
-                    getline(columnas, id_number, ';'); //leemos caracteres hasta encontrar y omitir ';'
-                    getline(columnas, id_alpha,';');
-                    getline(columnas, nombre,';');
-
-                    fila="";
-                    columnas.clear();
-
-                    int idNumber=std::stoi(id_number);
-                    PaMedicamento medicamento(idNumber,id_alpha,nombre);
-                    //medication.push_back(medicamento);
-                    medicam.inserta(medicam.djb22(std::to_string(medicamento.get_id_num())),medicamento);
-c++;
-                    std::cout<<"Insertado dato "<<c<<std::endl;
-                    std::cout<<"Dato "<<medicam.buscar(medicam.djb22(std::to_string(medicamento.get_id_num())))->get_nombre()<<std::endl;
-
-                }
-            }
-        }
-        std::cout<<"Insertado exitosamente"<<std::endl;
-
-        std::cout<<"Prueba buscando dato aleatorio en medi express"<<std::endl;
-        std::cout<<"Dato "<<medicam.buscar(medi_express.get_id_medication().djb22(std::to_string(1903)))->get_nombre()<<std::endl;
-        medi_express.set_id_medication(medicam);
+        medi_express.set_id_medication(medicam068_1);
         medi_express.mostrarEstadoTabla();
-        std::cout<<"TAML: "<<medicam.getTaml()<<"GETmax10:"<<medicam.getMax10()<<std::endl;
+        medi_express.set_id_medication(medicam068_2);
+        medi_express.mostrarEstadoTabla();
+
+        medi_express.set_id_medication(medicam068_3);
+        medi_express.mostrarEstadoTabla();
+
+
+        medi_express.set_id_medication(medicam065_1);
+        medi_express.mostrarEstadoTabla();
+
+        medi_express.set_id_medication(medicam065_2);
+        medi_express.mostrarEstadoTabla();
+
+        medi_express.set_id_medication(medicam065_3);
+        medi_express.mostrarEstadoTabla();
+
 
        /* std::vector<PaMedicamento*> meds_sin_lab = medi_express.getMedicamSinLab();
         std::list<Laboratorio> labs_madrid2 = medi_express.buscarLabSoloCiudad("Madrid");
