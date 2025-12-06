@@ -6,6 +6,7 @@
 #include <chrono>
 #include <iomanip> // Para formato de salida
 
+#include "MediExpress.h"
 #include "ThashMedicam.h"
 #include "PaMedicamento.h"
 
@@ -149,7 +150,9 @@ int main() {
      * # Empieza la segunda parte #
      * ############################
      */
+    MediExpress medi_express("../farmacias.csv","../pa_medicamentos.csv","../lab2.csv");
 
+    medi_express.set_id_medication(tablaOptima);
 
 
     return 0;

@@ -295,3 +295,11 @@ bool ThashMedicam::borra(unsigned long clave) {
     }
 }
 
+void ThashMedicam::set_th(int th) {
+    this->th = th;
+}
+
+void ThashMedicam::set_tamf(unsigned long tamf) {
+    this->tamf = tamf;
+}
+

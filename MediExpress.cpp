@@ -78,7 +78,7 @@ MediExpress::MediExpress(std::string fichero1,std::string fichero2,
             std::string id_number = "";
             std::string id_alpha="";
          //   is.open("../pa_medicamentos.csv"); //carpeta de proyecto
-           /*     is.open(fichero2);
+                is.open(fichero2);
                  if ( is.good() ) {
                      clock_t t_ini = clock();
 
@@ -101,12 +101,14 @@ MediExpress::MediExpress(std::string fichero1,std::string fichero2,
                              int idNumber=std::stoi(id_number);
                              PaMedicamento medicamento(idNumber,id_alpha,nombre);
                              //medication.push_back(medicamento);
-                             idMedication.inserta(idMedication.djb22(std::to_string(medicamento.get_id_num())),medicamento);
+                             //idMedication.inserta(idMedication.djb22(std::to_string(medicamento.get_id_num())),medicamento);
+                             //
+                             nombMedication.insert({nombre,&medicamento});
                          }
                      }
 
                      is.close();
-                 }*/
+                 }
                 std::cout<<"Lectura de Laboratorios:"<<std::endl;
                 std::string id;
                 std::string nombre_lab;

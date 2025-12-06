@@ -83,6 +83,9 @@ public:
     float getPromedioColisiones()const{return (float)sumacol / (float)taml;}; // NOLINT
     unsigned int getMax10()const{return max10;};
 
+    void set_th(int th);
+
+    void set_tamf(unsigned long tamf);
 };
 
 
