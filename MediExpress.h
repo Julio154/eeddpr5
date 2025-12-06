@@ -20,6 +20,7 @@ class MediExpress
         std::multimap<std::string,Farmacia> pharmacy;
         std::multimap<std::string,PaMedicamento*> nombMedication;
         ThashMedicam idMedication; //Clave id del PaMedicamento
+        std::vector<int> vMedi;
     public:
         ThashMedicam get_id_medication() const;
 
@@ -46,7 +47,7 @@ class MediExpress
 
         std::list<Laboratorio*> buscarLabCiudad(std::string nombreCiudad);
         std::list<Laboratorio*> buscarLabSoloCiudad(std::string nombreCiudad);
-        std::multimap<std::string,PaMedicamento*> buscarCompuesto(std::string comp); // Busca en el multimap
+        std::set<PaMedicamento*> buscarCompuesto(std::string comp); // Busca en el multimap
         PaMedicamento *buscarCompuesto(int id_num); // Busca en la tabla hash
         std::vector<PaMedicamento*> getMedicamSinLab();
 

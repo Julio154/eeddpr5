@@ -157,29 +157,31 @@ MediExpress::MediExpress(const MediExpress &orig):
 
 
 void MediExpress::suministrarMed() {
-    /*
-    unsigned int totalMed = medication.size();
-    unsigned int medIndex = 0;
 
-    for (std::list<Laboratorio>::iterator it = labs.begin();
-         it!=labs.end() && medIndex < totalMed;it++) {
+    const std::size_t totalMed = nombMedication.size();
+    int medAsignados = 0;
 
-        for (int i = 0; i < 2 && medIndex < totalMed; ++i) {
-            medication[medIndex].setLab(*it);
-            ++medIndex;
+    std::multimap<std::string, PaMedicamento*>::iterator itMed = nombMedication.begin();
+
+    for (list<Laboratorio>::iterator itLab = labs.begin();
+         itLab != labs.end() && medAsignados < totalMed;
+         ++itLab) {
+
+        for (int i = 0; i < 2 && medAsignados < totalMed; ++i, ++itMed, ++medAsignados) {
+            itMed->second->setLab(*itLab);
         }
-    }
+         }
 
-    std::cout << "Medicamentos enlazados: " << medIndex
-              << " | Sin enlazar: " << (totalMed - medIndex) << std::endl;
+    std::cout << "Medicamentos enlazados: " << medAsignados
+              << " | Sin enlazar: " << (totalMed - medAsignados) << std::endl;
 
-    medIndex = 0;
+    itMed = nombMedication.begin();
 
     const int MEDS_POR_FARMACIA = 100;
     const int STOCK_INICIAL = 10;
 
-    for (std::map<std::string, Farmacia>::iterator itFarm = pharmacy.begin();
-         itFarm != pharmacy.end() && medIndex < totalMed;
+    for (std::multimap<std::string, Farmacia>::iterator itFarm = pharmacy.begin();
+         itFarm != pharmacy.end() && itMed != nombMedication.end();
          ++itFarm) {
 
         Farmacia& farmaciaActual = itFarm->second;
@@ -187,15 +189,16 @@ void MediExpress::suministrarMed() {
         farmaciaActual.set_link_medi(this);
 
         for (int i = 0; i < MEDS_POR_FARMACIA; ++i) { // && medIndex < totalMed
-            PaMedicamento* medPtr = &medication[medIndex];
+            PaMedicamento* medPtr = itMed->second;
             farmaciaActual.nuevoStock(medPtr, STOCK_INICIAL);
-            medIndex++;
-            if (medIndex==totalMed)medIndex=0;
+            itMed++;
+            if (itMed==nombMedication.end())
+                itMed=nombMedication.begin();
         }
     }
 
-    std::cout << "Stock inicial distribuido. Último índice de medicamento asignado: " << medIndex << std::endl;
-*/
+    std::cout << "Stock inicial distribuido. Último índice de medicamento asignado: " << &itMed << std::endl;
+
 }
 
 Laboratorio * MediExpress::buscarLab(std::string nombreLab) {
@@ -229,32 +232,62 @@ std::list<Laboratorio*> MediExpress::buscarLabSoloCiudad(std::string nombreCiuda
 
 }
 
-std::multimap<std::string,PaMedicamento*> MediExpress::buscarCompuesto(std::string comp) {
+std::set<PaMedicamento*> MediExpress::buscarCompuesto(std::string comp) {
 
     std::istringstream iss(comp);
-    std::vector<std::string> compuestos;
-    std::string seg;
+    std::vector<std::string> palabrasBuscadas;
+    std::string palabra;
 
-    while (std::getline(iss,seg, ' ')) {
-        if ( !seg.empty()) {
-            compuestos.push_back(seg);
+    // 1. Separar las palabras de la búsqueda
+    while (iss >> palabra) {
+        if (!palabra.empty()) {
+            palabrasBuscadas.push_back(palabra);
         }
     }
-
-    std::multimap<std::string,PaMedicamento*> vmedicamento;
-
-    for (int i = 0; i < compuestos.size(); i++) {
-        std::pair<std::multimap<std::string,PaMedicamento*>::iterator,
-              std::multimap<std::string,PaMedicamento*>::iterator> range;
-        range = nombMedication.equal_range(comp);
-
-        // Buscar por nombre directamente y no por subcadena
-        for ( multimap<std::string,PaMedicamento*>::iterator it = range.first; it != range.second; ++it ){
-            vmedicamento.insert(*it);
-        }
+    if (palabrasBuscadas.empty()) {
+        return {};
     }
 
-    return vmedicamento;
+    // 2. Realizar la primera búsqueda para inicializar el conjunto "intersección"
+    std::set<PaMedicamento*> interseccion;
+
+    // equal_range devuelve un par de iteradores (inicio, fin) de las coincidencias
+    std::pair<std::multimap<std::string, PaMedicamento*>::iterator,
+        std::multimap<std::string, PaMedicamento*>::iterator> range =
+            nombMedication.equal_range(palabrasBuscadas[0]);
+
+    // Insertamos todos los hallazgos de la primera palabra en un set (ordenado y sin duplicados)
+    for (multimap<string,PaMedicamento*>::iterator it = range.first; it != range.second; ++it) {
+        interseccion.insert(it->second);
+    }
+
+    // 3. Procesar el resto de palabras calculando la intersección progresiva
+    for (int i = 1; i < palabrasBuscadas.size(); ++i) {
+        // Si en algún momento la intersección se queda vacía, paramos (no habrá resultados)
+        if (interseccion.empty()) break;
+
+        std::set<PaMedicamento*> matchesPalabraActual;
+        std::pair<std::multimap<std::string, PaMedicamento*>::iterator,
+            std::multimap<std::string, PaMedicamento*>::iterator> rangePal =
+                nombMedication.equal_range(palabrasBuscadas[i]);
+
+        for (multimap<string,PaMedicamento*>::iterator it = rangePal.first; it != rangePal.second; ++it) {
+            matchesPalabraActual.insert(it->second);
+        }
+
+        // Variable temporal para guardar el resultado de (Intersección_Actual AND Palabra_Nueva)
+        std::set<PaMedicamento*> tempResultado;
+
+        // Algoritmo de la STL que calcula la intersección de dos conjuntos ordenados
+        std::set_intersection(interseccion.begin(), interseccion.end(),
+                              matchesPalabraActual.begin(), matchesPalabraActual.end(),
+                              std::inserter(tempResultado, tempResultado.begin()));
+
+        // Actualizamos nuestro conjunto principal con el resultado filtrado
+        interseccion = tempResultado;
+    }
+
+    return interseccion;
 }
 
 std::vector<PaMedicamento *> MediExpress::getMedicamSinLab() {
@@ -282,13 +315,8 @@ std::vector<PaMedicamento *> MediExpress::get_medication() {
 }
 
 PaMedicamento *MediExpress::buscarCompuesto(int id_num) {
-    /*
-    for (unsigned i = 0; i < medication.size(); ++i) {
-        if (medication[i].get_id_num() == id_num) {
-            return &medication[i];
-        }
-    }
-    return nullptr;*/
+    PaMedicamento *medi = idMedication.buscar(id_num);
+    return medi;
 }
 
 std::vector<Farmacia*> MediExpress::buscarFarmacias(std::string nombre) {
