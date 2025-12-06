@@ -79,8 +79,8 @@ public:
     unsigned long getPrimomenor()const{return primomen;};
 
     //gets para el .md
-    float getFactorCarga()const{return (float)(taml/tamf);}; // NOLINT
-    float getPromedioColisiones()const{return (float)(sumacol/taml);}; // NOLINT
+    float getFactorCarga()const{return (float)taml / (float)tamf;;}; // NOLINT
+    float getPromedioColisiones()const{return (float)sumacol / (float)taml;}; // NOLINT
     unsigned int getMax10()const{return max10;};
 
 };
