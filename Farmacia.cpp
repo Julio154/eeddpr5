@@ -147,28 +147,23 @@ void Farmacia::set_link_medi(MediExpress *link_medi) {
 }
 
 void Farmacia::nuevoStock(PaMedicamento *pa, int n) {
-    Stock *aux = new Stock(pa, n);
-    map<int, Stock *>::iterator it;
-    for ( it=order.begin(); it!=order.end(); ++it) {
-        if ((*it).second->get_id_pa_med() == pa->get_id_num()) {
-            (*it).second->incrementa(n);
-            break;
-        }
-    }
-    if (it == order.end()) {
-        order.insert({aux->get_id_pa_med(),aux});
+    const int id = pa->get_id_num();
+    map<int,Stock*>::iterator it = order.find(id);
+    if (it != order.end()) {
+        it->second->incrementa(n);
+    } else {
+        order.insert({id, new Stock(pa, n)});
     }
 }
 
 bool Farmacia::eliminarStock(int id_num) {
-    map<int, Stock *>::iterator it;
-    for (it=order.begin(); it!=order.end(); ++it) {
-        if ((*it).second->get_id_pa_med() == id_num) {
-            order.erase(it);
-            return true;
-        }
+    map<int,Stock*>::iterator it = order.find(id_num);
+    if (it == order.end()) {
+        return false;
     }
-    return false;
+
+    order.erase(it);
+    return true;
 }
 
 bool operator<(const Farmacia &lhs, const Farmacia &rhs) {
