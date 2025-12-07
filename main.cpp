@@ -147,16 +147,14 @@ int main() {
 
     std::cout << "\n(NOTA: 1000 microsegundos = 1 milisegundo. Divide entre 1000 si lo quieres en ms)" << std::endl;
 
-
     /**
      * ############################
      * # Empieza la segunda parte #
      * ############################
      */
 
+
     MediExpress medi_express("../farmacias.csv","../pa_medicamentos.csv","../lab2.csv");
-
-
 
     return 0;
 }

@@ -173,56 +173,44 @@ ThashMedicam &ThashMedicam::operator=(const ThashMedicam &orig) {
     }
     return *this;
 }
-
 bool ThashMedicam::inserta(unsigned long clave, const PaMedicamento &dato) {
-    // Redimensión preventiva: Si superamos el 60%, crecemos antes de insertar.
-    if ((double)taml / tamf > 0.6) {
-        redimensionar(true);
-    }
 
-    int modificador = 0;
+    int modificador=0;
     unsigned int hasheo;
+    char sigue = 0;
 
-    while (true) { // Bucle infinito controlado por los return
+    while(sigue != 1){
+        if(this->th==1)
+            hasheo= hash1(clave,modificador);
+        if(this->th==2)
+            hasheo= hash2(clave,modificador);
+        if(this->th==3)
+            hasheo= hash3(clave,modificador);
 
-        // Selección de función Hash (Más compacto con else if)
-        if (th == 1)
-            hasheo = hash1(clave, modificador);
-        else if (th == 2)
-            hasheo = hash2(clave, modificador);
-        else
-            hasheo = hash3(clave, modificador);
+        if(tablah.at(hasheo).estado.libre == 1 || tablah.at(hasheo).estado.disponible == 1){
+            tablah.at(hasheo).dato=dato;
+            tablah.at(hasheo).estado.disponible=0; //ESTADO
+            tablah.at(hasheo).estado.libre=0;
+            tablah.at(hasheo).estado.ocupado=1;
+            tablah.at(hasheo).clave=clave;
+            taml++;
 
-        Entrada &celda = tablah.at(hasheo);
-
-        // El dato ya existe (Duplicado)
-        if (celda.dato == dato) {
-            return false;
+            sigue=1;
         }
-
-        // Encontramos un hueco (Libre o Disponible/Borrado)
-        if (celda.estado.libre == 1 || celda.estado.disponible == 1) {
-            celda.dato = dato;
-            celda.clave = clave;
-
-            // Actualizar estados
-            celda.estado.libre = 0;
-            celda.estado.ocupado = 1;
-            celda.estado.disponible = 0;
-
-            taml++; // Aumentar contador de elementos
-
-            // Actualizar estadísticas de colisiones
-            sumacol += modificador;
-            if (modificador > num_max_col) num_max_col = modificador;
-            if (modificador > 10) max10++;
-
-            return true; // Éxito y salimos
+        else{
+            if(tablah.at(hasheo).dato == dato)
+                return false;
+            else
+                modificador++;
         }
-
-        // Ocupado por otro dato -> Colisión, aumentamos modificador y repetimos
-        modificador++;
     }
+
+    sumacol+=modificador;
+    if(modificador > num_max_col)
+        this->num_max_col=modificador;
+    if(modificador > 10)
+        this->max10++;
+    return true;
 }
 
 PaMedicamento *ThashMedicam::buscar(unsigned long clave) {

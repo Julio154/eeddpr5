@@ -4,6 +4,7 @@
 
 #include "MediExpress.h"
 
+#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -31,8 +32,21 @@ MediExpress::MediExpress(const std::list<Laboratorio> &labs, const std::vector<P
 }
 */
 
+std::vector<std::string> dividir_nombre(const std::string& nombre) {
+    std::vector<std::string> palabras;
+
+    std::stringstream ss(nombre);
+    std::string palabra;
+
+    while (ss >> palabra) {
+        palabras.push_back(palabra);
+    }
+    return palabras;
+}
+
 MediExpress::MediExpress(std::string fichero1,std::string fichero2,
   std::string fichero3){
+    vector <int> vMedi;
     std::ifstream is;
     std::stringstream  columnas;
     std::string fila;
@@ -102,15 +116,30 @@ MediExpress::MediExpress(std::string fichero1,std::string fichero2,
                              int idNumber=std::stoi(id_number);
                              PaMedicamento medicamento(idNumber,id_alpha,nombre);
                              //medication.push_back(medicamento);
-
-
+                             vMedi.push_back(idNumber);
                              idMedication.inserta(idMedication.djb22(std::to_string(medicamento.get_id_num())),medicamento);
-                             nombMedication.insert({nombre,&medicamento});
+
                          }
                      }
 
                      is.close();
                  }
+
+    auto start = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < vMedi.size(); ++i) {
+
+        PaMedicamento *medica=buscarCompuesto(idMedication.djb22(std::to_string(vMedi[i])));
+        std::vector<std::string> palabras = dividir_nombre(medica->get_nombre());
+
+        for (const std::string& palabra : palabras) {
+            nombMedication.insert({palabra, medica});
+        }
+    }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    std::cout << "Tiempo total de busqueda en tabla hash: " << duration.count() << " ms\n";
+
+
                 std::cout<<"Lectura de Laboratorios:"<<std::endl;
                 std::string id;
                 std::string nombre_lab;
