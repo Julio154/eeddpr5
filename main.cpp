@@ -65,6 +65,9 @@ void cargarYTestear(double lambda, int tipoHash, std::vector<int>& idsParaBuscar
               << " | " << std::setw(22) << tabla.getPromedioColisiones() << " |" << std::endl;
 }
 
+
+
+
 int main() {
     std::vector<int> idsBusqueda;
     std::list<PaMedicamento> listaLineal;
@@ -150,9 +153,9 @@ int main() {
      * # Empieza la segunda parte #
      * ############################
      */
+
     MediExpress medi_express("../farmacias.csv","../pa_medicamentos.csv","../lab2.csv");
 
-    medi_express.set_id_medication(tablaOptima);
 
 
     return 0;
