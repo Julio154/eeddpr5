@@ -191,7 +191,7 @@ MediExpress::MediExpress(const MediExpress &orig):
 
 void MediExpress::suministrarMed() {
 
-    const std::size_t totalMed = nombMedication.size();
+    int totalMed = nombMedication.size();
     int medAsignados = 0;
 
     std::multimap<std::string, PaMedicamento*>::iterator itMed = nombMedication.begin();
@@ -200,10 +200,11 @@ void MediExpress::suministrarMed() {
          itLab != labs.end() && medAsignados < totalMed;
          ++itLab) {
 
-        for (int i = 0; i < 2 && medAsignados < totalMed; ++i, ++itMed, ++medAsignados) {
+        for (int i = 0; i < 2 && medAsignados < totalMed; ++i, ++itMed) {
             itMed->second->setLab(*itLab);
+            medAsignados++;
         }
-         }
+    }
 
     std::cout << "Medicamentos enlazados: " << medAsignados
               << " | Sin enlazar: " << (totalMed - medAsignados) << std::endl;

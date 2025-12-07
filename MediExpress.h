@@ -65,7 +65,7 @@ class MediExpress
         std::map<std::string,Farmacia> *get_pharmacy();
 
         bool eliminarMedicamento(int id_num);
-    unsigned int maxColisiones();
+        unsigned int maxColisiones();
 
         unsigned int numMax10();
 

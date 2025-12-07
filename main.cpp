@@ -156,5 +156,7 @@ int main() {
 
     MediExpress medi_express("../farmacias.csv","../pa_medicamentos.csv","../lab2.csv");
 
+    printf("");
+
     return 0;
 }
