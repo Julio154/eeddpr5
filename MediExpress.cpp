@@ -139,40 +139,38 @@ MediExpress::MediExpress(std::string fichero1,std::string fichero2,
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
     std::cout << "Tiempo total de busqueda en tabla hash: " << duration.count() << " ms\n";
 
+                    std::string id;
+                    std::string nombre_lab;
 
-                std::cout<<"Lectura de Laboratorios:"<<std::endl;
-                std::string id;
-                std::string nombre_lab;
+                    is.open(fichero3);
+                    //is.open("../lab2.csv"); //carpeta de proyecto
+                    if ( is.good() ) {
 
-                is.open(fichero3);
-                //is.open("../lab2.csv"); //carpeta de proyecto
-                if ( is.good() ) {
+                        while ( getline(is, fila ) ) {
 
-                    while ( getline(is, fila ) ) {
+                            //¿Se ha leído una nueva fila?
+                            if (fila!="") {
 
-                        //¿Se ha leído una nueva fila?
-                        if (fila!="") {
+                                columnas.str(fila);
 
-                            columnas.str(fila);
+                                //formato de fila: id;nombreLab;direccion;codPostal;localidad;
 
-                            //formato de fila: id;nombreLab;direccion;codPostal;localidad;
+                                getline(columnas, id, ';'); //leemos caracteres hasta encontrar y omitir ';'
+                                getline(columnas, nombre_lab,';');
+                                getline(columnas, direccion,';');
+                                getline(columnas, codPostal,';');
+                                getline(columnas, localidad,';');
 
-                            getline(columnas, id, ';'); //leemos caracteres hasta encontrar y omitir ';'
-                            getline(columnas, nombre_lab,';');
-                            getline(columnas, direccion,';');
-                            getline(columnas, codPostal,';');
-                            getline(columnas, localidad,';');
+                                fila="";
+                                columnas.clear();
 
-                            fila="";
-                            columnas.clear();
-
-                            int idNumberLabs=std::stoi(id);
-                            Laboratorio laboratorio (idNumberLabs,nombre_lab,direccion,codPostal,localidad);
-                            labs.push_back(laboratorio);
+                                int idNumberLabs=std::stoi(id);
+                                Laboratorio laboratorio (idNumberLabs,nombre_lab,direccion,codPostal,localidad);
+                                labs.push_back(laboratorio);
+                            }
                         }
+                        is.close();
                     }
-                    is.close();
-                }
 
     suministrarMed();
 
@@ -206,8 +204,7 @@ void MediExpress::suministrarMed() {
         }
     }
 
-    std::cout << "Medicamentos enlazados: " << medAsignados
-              << " | Sin enlazar: " << (totalMed - medAsignados) << std::endl;
+    std::cout << "Medicamentos enlazados: " << medAsignados << std::endl;
 
     itMed = nombMedication.begin();
 
@@ -231,7 +228,7 @@ void MediExpress::suministrarMed() {
         }
     }
 
-    std::cout << "Stock inicial distribuido. Último índice de medicamento asignado: " << &itMed << std::endl;
+    std::cout << "Stock inicial distribuido. Último índice de medicamento asignado: " << itMed->second->get_nombre() << std::endl;
 
 }
 
