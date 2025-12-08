@@ -44,8 +44,14 @@ std::vector<std::string> dividir_nombre(const std::string& nombre) {
     return palabras;
 }
 
+/**
+ * @brief cnstructor parametrizado por los ficheros de datos
+ * @param fichero1
+ * @param fichero2
+ * @param fichero3
+ */
 MediExpress::MediExpress(std::string fichero1,std::string fichero2,
-  std::string fichero3){
+                         std::string fichero3){
     vector <int> vMedi;
     list<PaMedicamento> auxPaMe;
     std::ifstream is;
@@ -85,7 +91,7 @@ MediExpress::MediExpress(std::string fichero1,std::string fichero2,
                 columnas.clear();
 
                 Farmacia *farmacia = new Farmacia(cif,provincia,localidad,nombre,direccion,codPostal);
-                pharmacy.insert(std::make_pair(cif,farmacia));
+                pharmacy.insert(std::make_pair(provincia,farmacia));
             }
         }
         is.close();
@@ -129,8 +135,7 @@ MediExpress::MediExpress(std::string fichero1,std::string fichero2,
 
     auto start = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < vMedi.size(); ++i) {
-
-        PaMedicamento *medica=buscarCompuesto(idMedication.djb22(std::to_string(vMedi[i])));
+        PaMedicamento *medica=buscarCompuesto(vMedi[i]);
         std::vector<std::string> palabras = dividir_nombre(medica->get_nombre());
 
         for (const std::string& palabra : palabras) {

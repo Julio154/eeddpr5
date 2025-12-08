@@ -4,6 +4,9 @@
 
 
 #include "Farmacia.h"
+
+#include <iostream>
+
 #include "MediExpress.h"
 
 
@@ -73,7 +76,7 @@ void Farmacia::dispensaMedicam(PaMedicamento *pa) {
 
 int Farmacia::comprarMedicam(int id_num, int n, PaMedicamento &result) {
 
-/*    int num_med_disp = buscaMedicamID(id_num);
+    int num_med_disp = buscaMedicamID(id_num);
     if (num_med_disp > n) {
         Stock *aux;
         for (auto it = order.begin(); it != order.end(); ++it) {
@@ -84,10 +87,35 @@ int Farmacia::comprarMedicam(int id_num, int n, PaMedicamento &result) {
         }
         aux->decrementa(n);
     }else {
-        pedidoMedicam(id_num, n);
+        pedidoMedicam(id_num, 10);
     }
 
-    return num_med_disp;*/
+    return num_med_disp;
+}
+
+int Farmacia::buscaMedicamID(int id_num) {
+
+    auto it = order.find(id_num);
+    if (it != order.end()) {
+            return it->second->get_num_stock();
+    } else {
+        return 0;
+    }
+
+
+/*    if (it != order.end()) {
+        if (  it->second->get_num_stock()>0) {
+            it->second->decrementa(1);
+            cout<<"Se ha realizado una venta de medicamento"<<endl;
+            return it->second->get_num_stock();
+        }else {
+            it->second->incrementa(10);
+            cout<<"Se ha realizado un pedido de 10u "<<endl;
+            return it->second->get_num_stock();
+        }
+    } else {
+        return 0;
+    }*/
 }
 
 std::string Farmacia::get_cif() const {

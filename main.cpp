@@ -235,14 +235,42 @@ int main() {
 
                 break;
             }
-            case 2:
+            case 2: {
                 cout<<"2. Los sevillanos compran magnesio , 12 personas a todas las farmacias"<<endl;
+                vector<Farmacia*> sevilla=medi_express.buscarFarmacias("SEVILLA");
+                set<PaMedicamento*> magnesio=medi_express.buscarCompuesto("MAGNESIO");
+                int s;
+                for (int i = 0; i < sevilla.size(); ++i) {
+                    for (PaMedicamento* medicamento : magnesio) {
+                        s=sevilla[i]->comprarMedicam(medicamento->get_id_num(),1,*medicamento);
+                    }
+                }
                 break;
-            case 3: cout<<"3. Mostrar stock farmacia Ubeda antes y despues de pedir “ANTIGENO OLIGOSACARIDO” en todas sus formas, pedir 10u "<<endl;
+            }
+            case 3: {
+                cout<<"3. Mostrar stock farmacia Ubeda antes y despues de pedir “ANTIGENO OLIGOSACARIDO” en todas sus formas, pedir 10u "<<endl;
+                vector<Farmacia*> jaen=medi_express.buscarFarmacias("JAEN");
+                cout<<"Farmacia ubicada en la localidad: "<<jaen[0]->get_localidad()<<endl;
+                set<PaMedicamento*> antigeno=medi_express.buscarCompuesto("ANTIGENO OLIGOSACARIDO");
+                for (PaMedicamento* medicamento : antigeno) {
+                    cout<<"NOMBRE:"<<medicamento->get_nombre()<<endl;
+                    cout<<"STOCK:"<<jaen[0]->buscaMedicamID(medicamento->get_id_num())<<endl;
+                }
+                cout<<"Realizando pedido ...." <<endl;
+                for (PaMedicamento* medicamento : antigeno) {
+                    cout<<"NOMBRE:"<<medicamento->get_nombre()<<endl;
+                    jaen[0]->nuevoStock(medicamento,10);
+                    cout<<"STOCK:"<<jaen[0]->buscaMedicamID(medicamento->get_id_num())<<endl;
+                }
                 break;
-            case 4:
+            }
+            case 4: {
                 cout<<"4. Eliminar CIANURO y BISMUTO en las farmacias "<<endl;
+                set<PaMedicamento*> cianuro=medi_express.buscarCompuesto("CIANURO");
+                set<PaMedicamento*> bismuto=medi_express.buscarCompuesto("BISMUTO");
+
                 break;
+            }
             case 5:
                 cout<<"PAREJAS: Redispersar"<<endl;
                 break;
