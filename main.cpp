@@ -5,6 +5,7 @@
 #include <list>
 #include <chrono>
 #include <iomanip> // Para formato de salida
+#include <thread>
 
 #include "MediExpress.h"
 #include "ThashMedicam.h"
@@ -300,6 +301,10 @@ int main() {
             }
             case 5:
                 cout<<"PAREJAS: Redispersar"<<endl;
+                medi_express.mostrarEstadoTabla();
+                medi_express.redispersar(10008);
+                std::this_thread::sleep_for(std::chrono::seconds(2));
+                medi_express.mostrarEstadoTabla();
                 break;
         }
     }while (opcion>0);

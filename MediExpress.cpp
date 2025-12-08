@@ -450,6 +450,12 @@ float MediExpress::factorCarga() {
     return idMedication.getFactorCarga();
 }
 
+void MediExpress::redispersar(unsigned tam) {
+    std::cout<<"Redispersando tabla..."<<"\n"<<endl;
+    idMedication.redispersar(tam);
+};
+
+
 void MediExpress::mostrarEstadoTabla() {
     std::cout << std::endl;
     std::cout <<"ESTADO DE LA TABLA:"<< std::endl;

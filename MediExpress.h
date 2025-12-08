@@ -75,7 +75,7 @@ class MediExpress
 
         void mostrarEstadoTabla();
 
-        void redispersar(unsigned tam){idMedication.redispersar(tam);};
+        void redispersar(unsigned tam);
 };
 
 
