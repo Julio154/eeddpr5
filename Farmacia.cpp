@@ -77,7 +77,7 @@ void Farmacia::dispensaMedicam(PaMedicamento *pa) {
 int Farmacia::comprarMedicam(int id_num, int n, PaMedicamento &result) {
 
     int num_med_disp = buscaMedicamID(id_num);
-    if (num_med_disp > n) {
+    if (num_med_disp >= n) {
         Stock *aux;
         for (auto it = order.begin(); it != order.end(); ++it) {
             if ((*it).second->get_id_pa_med() == id_num) {
@@ -87,7 +87,7 @@ int Farmacia::comprarMedicam(int id_num, int n, PaMedicamento &result) {
         }
         aux->decrementa(n);
     }else {
-        pedidoMedicam(id_num, 10);
+       // pedidoMedicam(id_num, 10);
     }
 
     return num_med_disp;

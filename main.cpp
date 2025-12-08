@@ -71,7 +71,7 @@ void menu() {
     cout<<"2. Los sevillanos compran magnesio , 12 personas a todas las farmacias"<<endl;
     cout<<"3. Mostrar stock farmacia Ubeda antes y despues de pedir “ANTIGENO OLIGOSACARIDO” en todas sus formas, pedir 10u "<<endl;
     cout<<"4. Eliminar CIANURO y BISMUTO en las farmacias "<<endl;
-    cout<<"PAREJAS: Redispersar"<<endl;
+    cout<<"5.PAREJAS: Redispersar"<<endl;
 
 }
 
@@ -240,15 +240,33 @@ int main() {
                 vector<Farmacia*> sevilla=medi_express.buscarFarmacias("SEVILLA");
                 set<PaMedicamento*> magnesio=medi_express.buscarCompuesto("MAGNESIO");
                 int s;
-                for (int i = 0; i < sevilla.size(); ++i) {
-                    for (PaMedicamento* medicamento : magnesio) {
-                        s=sevilla[i]->comprarMedicam(medicamento->get_id_num(),1,*medicamento);
+                int compra=0;
+                for (int cliente=0;cliente<12;cliente++) {
+                    cout<<"CLIENTE : "<<cliente<<endl;
+                    for (int i = 0; i < sevilla.size(); ++i) {
+                        cout<<"Compra en Farmacia "<<i<<" : "<<sevilla[i]->get_nombre()<<"Ubicada en "<<sevilla[i]->get_provincia()<<endl;
+                        for (PaMedicamento* medicamento : magnesio) {
+                            cout<<"Intentando comprar: "<<medicamento->get_nombre()<<endl;
+                            s=sevilla[i]->comprarMedicam(medicamento->get_id_num(),1,*medicamento);
+                            cout<<"Stock: "<<s<<endl;
+                            if (s!=0) {
+                                compra=1;
+                                break;
+                            }
+                        }
+                        if (compra==0) {
+                            cout<<"No hay ningun tipo de magnesio, pedimos OXIDO DE MAGNESIO"<<endl;
+                            PaMedicamento* oxMg=medi_express.buscarCompuesto(3640);
+                            sevilla[i]->nuevoStock(oxMg,10);
+                            cout<<"Stock OXIDO MAGNESIO: "<<sevilla[i]->comprarMedicam(3640,1,*oxMg)<<endl;
+                        }
+                        compra=0;
                     }
                 }
                 break;
             }
             case 3: {
-                cout<<"3. Mostrar stock farmacia Ubeda antes y despues de pedir “ANTIGENO OLIGOSACARIDO” en todas sus formas, pedir 10u "<<endl;
+                cout<<"3. Mostrar stock farmacia Ubeda antes y despues de pedir ANTIGENO OLIGOSACARIDO en todas sus formas, pedir 10u "<<endl;
                 vector<Farmacia*> jaen=medi_express.buscarFarmacias("JAEN");
                 cout<<"Farmacia ubicada en la localidad: "<<jaen[0]->get_localidad()<<endl;
                 set<PaMedicamento*> antigeno=medi_express.buscarCompuesto("ANTIGENO OLIGOSACARIDO");
