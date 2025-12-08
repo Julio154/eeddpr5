@@ -268,7 +268,16 @@ int main() {
                 cout<<"4. Eliminar CIANURO y BISMUTO en las farmacias "<<endl;
                 set<PaMedicamento*> cianuro=medi_express.buscarCompuesto("CIANURO");
                 set<PaMedicamento*> bismuto=medi_express.buscarCompuesto("BISMUTO");
-
+                cout<<"Hay "<<cianuro.size()<<" medicamentos con CIANURO"<<endl;
+                cout<<"Hay "<<bismuto.size()<<" medicamentos con BISMUTO"<<endl;
+                for (PaMedicamento* medicamento : cianuro) {
+                    cout<<"Eliminando "<<medicamento->get_nombre()<<endl;
+                    medi_express.eliminarMedicamento(medicamento->get_id_num());
+                }
+                for (PaMedicamento* medicamento : bismuto) {
+                    cout<<"Eliminando "<<medicamento->get_nombre()<<endl;
+                    medi_express.eliminarMedicamento(medicamento->get_id_num());
+                }
                 break;
             }
             case 5:
