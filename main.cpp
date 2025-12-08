@@ -65,7 +65,15 @@ void cargarYTestear(double lambda, int tipoHash, std::vector<int>& idsParaBuscar
               << " | " << std::setw(22) << tabla.getPromedioColisiones() << " |" << std::endl;
 }
 
+void menu() {
 
+    cout<<"1. Buscar los siguientes compuesto por nombre completo y mostrarlos en pantalla "<<endl;
+    cout<<"2. Los sevillanos compran magnesio , 12 personas a todas las farmacias"<<endl;
+    cout<<"3. Mostrar stock farmacia Ubeda antes y despues de pedir “ANTIGENO OLIGOSACARIDO” en todas sus formas, pedir 10u "<<endl;
+    cout<<"4. Eliminar CIANURO y BISMUTO en las farmacias "<<endl;
+    cout<<"PAREJAS: Redispersar"<<endl;
+
+}
 
 
 int main() {
@@ -155,8 +163,92 @@ int main() {
 
 
     MediExpress medi_express("../farmacias.csv","../pa_medicamentos.csv","../lab2.csv");
+    int opcion;
+    do {
+    menu();
+        std::cin >> opcion;
+        switch (opcion) {
 
-    printf("");
+            case 1: {
+                cout<<"1. Buscar los siguientes compuesto por nombre completo y mostrarlos en pantalla "<<endl;
+                set<PaMedicamento*> magclohe=medi_express.buscarCompuesto("MAGNESIO CLORURO HEXAHIDRATO");
 
+                cout<<"BUSQUEDA :  MAGNESIO CLORURO HEXAHIDRATO --------"<<endl;
+                if (!magclohe.empty()) {
+                    for (PaMedicamento* medicamento : magclohe) {
+                            std::cout << "-Nombre: " << medicamento->get_nombre() << std::endl;
+                            std::cout << "-Num: " << medicamento->get_id_num() << std::endl;
+                            std::cout << "-Alpha: " << medicamento->get_id_alpha() << std::endl;
+                    }
+                }
+                cout<<"BUSQUEDA :   CLORURO --------"<<endl;
+
+                set<PaMedicamento*>cloruro= medi_express.buscarCompuesto("CLORURO");
+                if (!cloruro.empty()) {
+                    for (PaMedicamento* medicamento : cloruro) {
+                            std::cout << "-Nombre: " << medicamento->get_nombre() << std::endl;
+                            std::cout << "-Num: " << medicamento->get_id_num() << std::endl;
+                            std::cout << "-Alpha: " << medicamento->get_id_alpha() << std::endl;
+                    }
+                }
+                cout<<"BUSQUEDA :  ANHIDRO CALCIO CLORURO --------"<<endl;
+
+                set<PaMedicamento*>anhcalclo= medi_express.buscarCompuesto("ANHIDRO CALCIO CLORURO");
+                if (!anhcalclo.empty()) {
+                    for (PaMedicamento* medicamento : anhcalclo) {
+                            std::cout << "-Nombre: " << medicamento->get_nombre() << std::endl;
+                            std::cout << "-Num: " << medicamento->get_id_num() << std::endl;
+                            std::cout << "-Alpha: " << medicamento->get_id_alpha() << std::endl;
+                    }
+                }
+
+                cout<<"BUSQUEDA :  LIDOCAINA HIDROCLORURO --------"<<endl;
+
+                set<PaMedicamento*>lidohidro= medi_express.buscarCompuesto("LIDOCAINA HIDROCLORURO");
+                if (!lidohidro.empty()) {
+                    for (PaMedicamento* medicamento : lidohidro) {
+                            std::cout << "-Nombre: " << medicamento->get_nombre() << std::endl;
+                            std::cout << "-Num: " << medicamento->get_id_num() << std::endl;
+                            std::cout << "-Alpha: " << medicamento->get_id_alpha() << std::endl;
+                    }
+                }
+                cout<<"BUSQUEDA :  MENTA PIPERITA --------"<<endl;
+
+                set<PaMedicamento*>mentapipe= medi_express.buscarCompuesto("MENTA PIPERITA");
+                if (!mentapipe.empty()) {
+                    for (PaMedicamento* medicamento : mentapipe) {
+                            std::cout << "-Nombre: " << medicamento->get_nombre() << std::endl;
+                            std::cout << "-Num: " << medicamento->get_id_num() << std::endl;
+                            std::cout << "-Alpha: " << medicamento->get_id_alpha() << std::endl;
+                    }
+                }
+
+
+                cout<<"BUSQUEDA :  VIRUS GRIPE --------"<<endl;
+
+                set<PaMedicamento*>virusgripe=medi_express.buscarCompuesto("VIRUS GRIPE ");
+                if (!virusgripe.empty()) {
+                    for (PaMedicamento* medicamento : virusgripe) {
+                            std::cout << "-Nombre: " << medicamento->get_nombre() << std::endl;
+                            std::cout << "-Num: " << medicamento->get_id_num() << std::endl;
+                            std::cout << "-Alpha: " << medicamento->get_id_alpha() << std::endl;
+                    }
+                }
+
+                break;
+            }
+            case 2:
+                cout<<"2. Los sevillanos compran magnesio , 12 personas a todas las farmacias"<<endl;
+                break;
+            case 3: cout<<"3. Mostrar stock farmacia Ubeda antes y despues de pedir “ANTIGENO OLIGOSACARIDO” en todas sus formas, pedir 10u "<<endl;
+                break;
+            case 4:
+                cout<<"4. Eliminar CIANURO y BISMUTO en las farmacias "<<endl;
+                break;
+            case 5:
+                cout<<"PAREJAS: Redispersar"<<endl;
+                break;
+        }
+    }while (opcion>0);
     return 0;
 }

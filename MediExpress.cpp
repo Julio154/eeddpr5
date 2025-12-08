@@ -47,6 +47,7 @@ std::vector<std::string> dividir_nombre(const std::string& nombre) {
 MediExpress::MediExpress(std::string fichero1,std::string fichero2,
   std::string fichero3){
     vector <int> vMedi;
+    list<PaMedicamento> auxPaMe;
     std::ifstream is;
     std::stringstream  columnas;
     std::string fila;
@@ -118,7 +119,7 @@ MediExpress::MediExpress(std::string fichero1,std::string fichero2,
                              //medication.push_back(medicamento);
                              vMedi.push_back(idNumber);
                              idMedication.inserta(idMedication.djb22(std::to_string(medicamento.get_id_num())),medicamento);
-
+                             auxPaMe.push_back(medicamento);
                          }
                      }
 
@@ -171,8 +172,21 @@ MediExpress::MediExpress(std::string fichero1,std::string fichero2,
                         }
                         is.close();
                     }
+    auto inicioBusLista = std::chrono::high_resolution_clock::now();
 
     suministrarMed();
+    for (int i = 0; i < vMedi.size(); ++i) {
+        for (auto it = auxPaMe.begin(); it!= auxPaMe.end(); ++it) {
+            if (it->get_id_num()==vMedi[i]) {
+                break;
+            }
+        }
+    }
+
+    auto finBusLista = std::chrono::high_resolution_clock::now();
+    auto duracionBusLista = std::chrono::duration_cast<std::chrono::milliseconds>(finBusLista - inicioBusLista);
+    std::cout << "Tiempo total de busqueda en la lista: " << duracionBusLista.count() << " ms\n";
+
 
 }
 /*
@@ -228,7 +242,7 @@ void MediExpress::suministrarMed() {
         }
     }
 
-    std::cout << "Stock inicial distribuido. Último índice de medicamento asignado: " << itMed->second->get_nombre() << std::endl;
+    std::cout << "Stock inicial distribuido. Ultimo indice de medicamento asignado: " << itMed->second->get_nombre() << std::endl;
 
 }
 
