@@ -84,7 +84,7 @@ MediExpress::MediExpress(std::string fichero1,std::string fichero2,
                 fila="";
                 columnas.clear();
 
-                Farmacia farmacia(cif,provincia,localidad,nombre,direccion,codPostal);
+                Farmacia *farmacia = new Farmacia(cif,provincia,localidad,nombre,direccion,codPostal);
                 pharmacy.insert(std::make_pair(cif,farmacia));
             }
         }
@@ -94,6 +94,7 @@ MediExpress::MediExpress(std::string fichero1,std::string fichero2,
             std::string id_alpha="";
          //   is.open("../pa_medicamentos.csv"); //carpeta de proyecto
                 idMedication=ThashMedicam(3310, 0.65, 2);
+                idMedication.setLambda(0.40); // para forzar a que redisperse
                 is.open(fichero2);
                  if ( is.good() ) {
                      clock_t t_ini = clock();
@@ -189,10 +190,6 @@ MediExpress::MediExpress(std::string fichero1,std::string fichero2,
 
 
 }
-/*
-MediExpress::MediExpress(const std::map<std::string,Farmacia> &pharmacy)
-            : pharmacy(pharmacy) {
-}*/
 
 MediExpress::MediExpress(const MediExpress &orig):
     labs(orig.labs),
@@ -225,11 +222,11 @@ void MediExpress::suministrarMed() {
     const int MEDS_POR_FARMACIA = 100;
     const int STOCK_INICIAL = 10;
 
-    for (std::multimap<std::string, Farmacia>::iterator itFarm = pharmacy.begin();
+    for (std::multimap<std::string, Farmacia*>::iterator itFarm = pharmacy.begin();
          itFarm != pharmacy.end() && itMed != nombMedication.end();
          ++itFarm) {
 
-        Farmacia& farmaciaActual = itFarm->second;
+        Farmacia& farmaciaActual = *itFarm->second;
 
         farmaciaActual.set_link_medi(this);
 
@@ -351,27 +348,26 @@ std::list<Laboratorio>& MediExpress::get_labs()  {
     return labs;
 }
 
-std::vector<PaMedicamento *> MediExpress::get_medication() {
-    /*
-    std::vector<PaMedicamento*> meds;
-    for (int i = 0; i < medication.size(); i++)
-        meds[meds.size()] = &medication[i];
-    return meds;*/
+std::multimap<std::string,PaMedicamento *> MediExpress::get_medication() {
+    return nombMedication;
 }
 
 PaMedicamento *MediExpress::buscarCompuesto(int id_num) {
-    PaMedicamento *medi = idMedication.buscar(id_num);
-    return medi;
+    const unsigned long clave = idMedication.djb22(std::to_string(id_num));
+    return idMedication.buscar(clave);
 }
 
 std::vector<Farmacia*> MediExpress::buscarFarmacias(std::string nombre) {
-    std::vector<Farmacia*> farmacias;
-    for (std::map<std::string,Farmacia>::iterator it=pharmacy.begin(); it!=pharmacy.end(); ++it) {
-        if (it->second.get_provincia().find(nombre) != std::string::npos) {
-            farmacias.push_back(&it->second);
-        }
+    std::vector<Farmacia*> resultado;
+    std::pair<std::multimap<std::string,Farmacia*>::iterator,
+        std::multimap<std::string,Farmacia*>::iterator> rango =
+            pharmacy.equal_range(nombre);
+    for ( std::multimap<std::string,Farmacia*>::iterator it = rango.first;
+        it != rango.second;
+        ++it){
+        resultado.push_back(it->second);
     }
-    return farmacias;
+    return resultado;
 }
 
 void MediExpress::suministrarFarmacia(Farmacia &f, int id_num, int n) {
@@ -391,41 +387,45 @@ std::list<Laboratorio*> MediExpress::buscarLabs(PaMedicamento med) {
     return nuevaLista;
 }
 
-std::map<std::string,Farmacia> *MediExpress::get_pharmacy() {
-    //return &pharmacy;
+std::multimap<std::string,Farmacia*> *MediExpress::get_pharmacy() {
+    return &pharmacy;
 }
 
 bool MediExpress::eliminarMedicamento(int id_num) {
-    bool encontradoEnCentral = false;
-/*
-    for (auto it = medication.begin(); it != medication.end(); ) {
-        if (it->get_id_num() == id_num) {
-            it = medication.erase(it);
-            encontradoEnCentral = true;
-            break;
+    // 1. Buscar medicamento
+    const unsigned long clave = idMedication.djb22(std::to_string(id_num));
+    PaMedicamento* medicamento = idMedication.buscar(clave);
+
+    if (medicamento == nullptr) {
+        std::cout << "Aviso: El medicamento ID=" << id_num
+                  << " no se encontro." << std::endl;
+        return false;
+    }
+
+    // 2. Eliminar de la estructura hash principal
+    idMedication.borra(clave);
+
+    // 3. Eliminar de las entradas indexadas por nombre (multimap palabra -> ptr)
+    for (auto it = nombMedication.begin(); it != nombMedication.end(); ) {
+        if (it->second == medicamento) {
+            it = nombMedication.erase(it);
         } else {
             ++it;
         }
     }
 
+    // 4. Eliminar de las farmacias asociadas
     int conteoFarmacias = 0;
-    // Recorremos el mapa de farmacias
     for (auto& par : pharmacy) {
-        if (par.second.eliminarStock(id_num)) {
-            conteoFarmacias++;
+        if (par.second->eliminarStock(id_num)) {
+            ++conteoFarmacias;
         }
     }
 
-    if (encontradoEnCentral) {
-        std::cout << "Exito: Medicamento ID=" << id_num
-                  << " eliminado del catalogo central y retirado de "
-                  << conteoFarmacias << " farmacias." << std::endl;
-    } else {
-        std::cout << "Aviso: El medicamento ID=" << id_num
-                  << " no se encontro en el catalogo central." << std::endl;
-    }
-
-    return encontradoEnCentral;*/
+    std::cout << "Exito: Medicamento ID=" << id_num
+              << " eliminado del catalogo central y retirado de "
+              << conteoFarmacias << " farmacias." << std::endl;
+    return true;
 }
 
 unsigned int MediExpress::maxColisiones() {
@@ -454,6 +454,7 @@ void MediExpress::mostrarEstadoTabla() {
     std::cout <<"factorCarga "<<factorCarga()<< std::endl;
     std::cout <<"Tamano Logico "<<idMedication.getTaml()<< std::endl;
     std::cout <<"Tamano fisico "<<idMedication.getTamf()<< std::endl;
+    std::cout << "redisersiones " << idMedication.getRedisps() << std::endl;
 }
 
 

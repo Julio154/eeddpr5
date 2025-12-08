@@ -150,10 +150,8 @@ int main() {
     stop = std::chrono::high_resolution_clock::now();
     auto durationList = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
-    std::cout << "Tiempo en realizar las busquedas en la Tabla Hash: " << durationHash.count() << " microsegundos." << std::endl;
-    std::cout << "Tiempo en realizar las busquedas en la Lista: " << durationList.count() << " microsegundos." << std::endl;
-
-    std::cout << "\n(NOTA: 1000 microsegundos = 1 milisegundo. Divide entre 1000 si lo quieres en ms)" << std::endl;
+    std::cout << "Tiempo en realizar las busquedas en la Tabla Hash: " << (float)durationHash.count()/1000 << " ms." << std::endl;
+    std::cout << "Tiempo en realizar las busquedas en la Lista: " << (float)durationList.count()/1000 << " ms." << std::endl;
 
     /**
      * ############################

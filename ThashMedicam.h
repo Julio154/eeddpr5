@@ -37,6 +37,10 @@ private:
     unsigned long primomen=0;
     deque<Entrada> tablah;
 
+    //Parejas
+    double lambdaMax = 0.75;
+    unsigned int redisps = 0;
+
     unsigned long djb2(const string &cad){
         unsigned long hash = 5381;
         for (auto c : cad) {
@@ -86,6 +90,12 @@ public:
     void set_th(int th);
 
     void set_tamf(unsigned long tamf);
+
+    //parejas
+    void redispersar(unsigned long nuevoTam);
+    void setLambda(double lambda) { lambdaMax = lambda; }
+    double getLambda() const { return lambdaMax; }
+    unsigned int getRedisps() const { return redisps; }
 };
 
 
