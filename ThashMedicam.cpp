@@ -149,19 +149,19 @@ unsigned int ThashMedicam::hash3(unsigned long clave, int n) const{
 //col means colision
 ThashMedicam::ThashMedicam(unsigned long tamano, double lambda, int tth) :
         th(tth), tamf(dTamaf(tamano, lambda)), taml(0), num_max_col(0), sumacol(0),
-        primomen(dTamaf(tamano, lambda)), tablah(dTamaf(tamano, lambda), Entrada()),max10(0)
+        primomen(dTamaf(tamano, lambda)), tablah(dTamaf(tamano, lambda), Entrada()),max10(0),lambdaMax(lambda),
+        redisps(0)
 {}
 
 ThashMedicam::ThashMedicam(const ThashMedicam &orig) :
         th(orig.th), tamf(orig.tamf), taml(orig.taml), num_max_col(orig.num_max_col),
-        sumacol(orig.sumacol), primomen(orig.primomen), tablah(orig.tablah),max10(orig.max10)
+        sumacol(orig.sumacol), primomen(orig.primomen), tablah(orig.tablah),max10(orig.max10),
+        lambdaMax(orig.lambdaMax), redisps(orig.redisps)
 {}
 
 ThashMedicam &ThashMedicam::operator=(const ThashMedicam &orig) {
 
     if(this != &orig){
-      //  if (this) { delete[] this; }
-
         th = orig.th;
         tamf = orig.tamf;
         taml = orig.taml;
@@ -170,6 +170,8 @@ ThashMedicam &ThashMedicam::operator=(const ThashMedicam &orig) {
         primomen = orig.primomen;
         tablah = orig.tablah;
         max10 = orig.max10;
+        lambdaMax = orig.lambdaMax;
+        redisps = orig.redisps;
     }
     return *this;
 }
@@ -203,6 +205,12 @@ bool ThashMedicam::inserta(unsigned long clave, const PaMedicamento &dato) {
             else
                 modificador++;
         }
+    }
+
+    double carga = static_cast<double>(taml) / static_cast<double>(tamf);
+    if (carga > lambdaMax) {
+        unsigned long nuevoTam = static_cast<unsigned long>(std::ceil(tamf * 1.3));
+        redispersar(nuevoTam);
     }
 
     sumacol+=modificador;
@@ -289,5 +297,58 @@ void ThashMedicam::set_th(int th) {
 
 void ThashMedicam::set_tamf(unsigned long tamf) {
     this->tamf = tamf;
+}
+
+void ThashMedicam::redispersar(unsigned long nuevoTam) {
+    if (nuevoTam == 0) return;
+
+    unsigned long tamObjetivo = primomayFun(static_cast<int>(nuevoTam));
+    std::deque<Entrada> viejaTabla = tablah;   // copia con los datos actuales
+
+    tablah.assign(tamObjetivo, Entrada());
+    tamf = tamObjetivo;
+    taml = 0;
+    num_max_col = 0;
+    sumacol = 0;
+    max10 = 0;
+
+    for (auto &entrada : tablah) {
+        entrada.estado.libre = 1;
+        entrada.estado.ocupado = 0;
+        entrada.estado.disponible = 0;
+    }
+
+    auto insertarEntrada = [&](const Entrada &entrada) {
+        int intento = 0;
+        while (true) {
+            unsigned int pos;
+            if (th == 1) pos = hash1(entrada.clave, intento);
+            else if (th == 2) pos = hash2(entrada.clave, intento);
+            else pos = hash3(entrada.clave, intento);
+
+            Entrada &dest = tablah.at(pos);
+            if (dest.estado.libre || dest.estado.disponible) {
+                dest = entrada;
+                dest.estado.libre = 0;
+                dest.estado.ocupado = 1;
+                dest.estado.disponible = 0;
+
+                taml++;
+                sumacol += intento;
+                if (intento > num_max_col) num_max_col = intento;
+                if (intento > 10) max10++;
+                break;
+            }
+            intento++;
+        }
+    };
+
+    for (const Entrada &entrada : viejaTabla) {
+        if (entrada.estado.ocupado == 1) {
+            insertarEntrada(entrada);
+        }
+    }
+
+    redisps++;
 }
 

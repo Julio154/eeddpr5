@@ -17,7 +17,7 @@ class MediExpress
 {
     private:
         std::list<Laboratorio> labs;
-        std::multimap<std::string,Farmacia> pharmacy;
+        std::multimap<std::string,Farmacia*> pharmacy;
         std::multimap<std::string,PaMedicamento*> nombMedication;
         ThashMedicam idMedication; //Clave id del PaMedicamento
         std::vector<int> vMedi;
@@ -55,14 +55,14 @@ class MediExpress
 
         void set_labs(const std::list<Laboratorio> &labs);
 
-        std::vector<PaMedicamento*> get_medication();
+        std::multimap<std::string,PaMedicamento*> get_medication();
 
          //para enlazar un medicamento a una farmacia
         std::vector<Farmacia*> buscarFarmacias(std::string nombre);
         void suministrarFarmacia(Farmacia &f, int id_num, int n);
         std::list<Laboratorio*> buscarLabs(PaMedicamento med);
 
-        std::map<std::string,Farmacia> *get_pharmacy();
+        std::multimap<std::string,Farmacia*> *get_pharmacy();
 
         bool eliminarMedicamento(int id_num);
         unsigned int maxColisiones();
@@ -74,6 +74,8 @@ class MediExpress
         float factorCarga();
 
         void mostrarEstadoTabla();
+
+        void redispersar(unsigned tam){idMedication.redispersar(tam);};
 };
 
 
