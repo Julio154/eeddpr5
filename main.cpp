@@ -110,8 +110,7 @@ int main() {
     // ------------------------------------------------------------------
     std::cout << "## Comparacion de tiempos" << std::endl;
 
-    // Usamos la mejor configuración (ejemplo: Lambda 0.65, Hash 2)
-    // Tú puedes cambiar esto según cuál haya salido mejor arriba.
+    // Usamos la mejor configuración
     ThashMedicam tablaOptima(NUM_DATOS_ESTIMADOS, 0.65, 2);
 
     // Recargar tabla optima
