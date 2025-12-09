@@ -4,12 +4,18 @@
 #include <vector>
 #include <list>
 #include <chrono>
-#include <iomanip> // Para formato de salida
+#include <iomanip>
 #include <thread>
 
 #include "MediExpress.h"
 #include "ThashMedicam.h"
 #include "PaMedicamento.h"
+
+/**
+ * @authors Julio Gallegos Rojas jgr00087@red.ujaen.es
+ * @author Silvia Cruz Román scr00043@red.ujaen.es
+ * @note Solicito entrega tardia debido a que no pudimos terminar todo lo que pedia el proyecto.
+ */
 
 const std::string RUTA_CSV = "../pa_medicamentos.csv";
 const int NUM_DATOS_ESTIMADOS = 3310;
@@ -78,9 +84,11 @@ int main() {
     std::vector<int> idsBusqueda;
     std::list<PaMedicamento> listaLineal;
 
-    //
-    // PARTE 1: TABLAS COMPARATIVAS
-    //
+    /*
+    * #######################
+    * # Tablas comparativas #
+    * #######################
+    */
 
     // --- BLOQUE 1: Lambda 0.65 ---
     // Calculamos el tamaño primo aproximado para mostrarlo en el título
@@ -104,10 +112,11 @@ int main() {
     cargarYTestear(0.68, 2, idsBusqueda, listaLineal, false);
     cargarYTestear(0.68, 3, idsBusqueda, listaLineal, false);
     std::cout << std::endl;
-
-    // ------------------------------------------------------------------
-    // PARTE 2: COMPARATIVA DE TIEMPOS (HASH vs LISTA)
-    // ------------------------------------------------------------------
+    /*
+    * #################################
+    * # Usamos la mejor configuración #
+    * #################################
+    */
     std::cout << "## Comparacion de tiempos" << std::endl;
 
     // Usamos la mejor configuración
