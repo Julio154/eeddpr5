@@ -11,11 +11,9 @@
 #include "ThashMedicam.h"
 #include "PaMedicamento.h"
 
-// Ajusta estas rutas si tus ficheros están en otro sitio
 const std::string RUTA_CSV = "../pa_medicamentos.csv";
-const int NUM_DATOS_ESTIMADOS = 3310; // Dato del PDF
+const int NUM_DATOS_ESTIMADOS = 3310;
 
-// Función auxiliar para cargar datos y devolver la tabla llena
 void cargarYTestear(double lambda, int tipoHash, std::vector<int>& idsParaBuscar, std::list<PaMedicamento>& listaComparacion, bool llenarLista) {
 
     ThashMedicam tabla(NUM_DATOS_ESTIMADOS, lambda, tipoHash);
@@ -53,7 +51,6 @@ void cargarYTestear(double lambda, int tipoHash, std::vector<int>& idsParaBuscar
     }
     is.close();
 
-    // --- IMPRESIÓN DE RESULTADOS EN FORMATO MARKDOWN ---
     std::string nombreHash;
     if (tipoHash == 1) nombreHash = "Cuadratica";
     else if (tipoHash == 2) nombreHash = "Doble A";
@@ -72,7 +69,7 @@ void menu() {
     cout<<"2. Los sevillanos compran magnesio , 12 personas a todas las farmacias"<<endl;
     cout<<"3. Mostrar stock farmacia Ubeda antes y despues de pedir “ANTIGENO OLIGOSACARIDO” en todas sus formas, pedir 10u "<<endl;
     cout<<"4. Eliminar CIANURO y BISMUTO en las farmacias "<<endl;
-    cout<<"5.PAREJAS: Redispersar"<<endl;
+    cout<<"5. PAREJAS: Redispersar"<<endl;
 
 }
 
@@ -81,9 +78,9 @@ int main() {
     std::vector<int> idsBusqueda;
     std::list<PaMedicamento> listaLineal;
 
-    // ------------------------------------------------------------------
+    //
     // PARTE 1: TABLAS COMPARATIVAS
-    // ------------------------------------------------------------------
+    //
 
     // --- BLOQUE 1: Lambda 0.65 ---
     // Calculamos el tamaño primo aproximado para mostrarlo en el título
@@ -300,7 +297,7 @@ int main() {
                 break;
             }
             case 5:
-                cout<<"PAREJAS: Redispersar"<<endl;
+                cout<<" PAREJAS: Redispersar"<<endl;
                 medi_express.mostrarEstadoTabla();
                 medi_express.redispersar(10008);
                 std::this_thread::sleep_for(std::chrono::seconds(2));
